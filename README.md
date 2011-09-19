@@ -16,9 +16,15 @@ Changelog
 ---------
 
 2nd April 2006 - Added gnuplot_splot_grid for plotting 2D arrays of data, and restored the lost contour plotting code.
+
 13th March 2006 - Fixed "bus error" under OS X when not using X11 and USE_AQUA environment variable is not set.
+
 23rd November 2005 - gnuplot_contour_plot added (plots contours, use gnuplot_setstyle to set the contour style)
+
 15th September 2005 - Added possible OS X support, plus the gnuplot_plot_obj_xy and gnuplot_splot_obj functions.
+
 11th September 2005 - Windows support added
+
 14th August 2005 - included fixes from the official version 2.10
+
 2nd November 2004 - initial version uploaded (based on gnuplot_i v2.6)
