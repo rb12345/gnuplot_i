@@ -3,12 +3,12 @@ Extended GNUPlot wrapper
 
 This is a modification of the `gnuplot_i` library by Nicolas Devillard, which enables the following functionality:
 
-*    3D plots, using gnuplot_splot(handle,x,y,z,n,"title");
-*    Setting z-axis labels with gnuplot_set_zlabel(handle,"z-axis label");
-*    Production of colour PostScript files with gnuplot_hardcopy_colour(handle,"graph.ps");
-*    Windows support - added in September 2005.
-*    Plotting of complex structures through the use of callbacks - see gnuplot_plot_obj_xy and gnuplot_splot_obj in gnuplot_i.c.
-*    Contour plotting, using gnuplot_setstyle(handle,"lines");gnuplot_contour_plot(handle,x,y,z,nx,ny,"title");
+*    3D plots, using `gnuplot_splot(handle, x, y, z, n, "title")`
+*    Setting z-axis labels with `gnuplot_set_zlabel(handle, "z-axis label")`
+*    Production of colour PostScript files with `gnuplot_hardcopy_colour(handle, "graph.ps")`
+*    Windows support, added in September 2005
+*    Plotting of complex structures through the use of callbacks, see `gnuplot_plot_obj_xy` and `gnuplot_splot_obj`
+*    Contour plotting, using `gnuplot_setstyle(handle, "lines")` and `gnuplot_contour_plot(handle, x, y, z, nx, ny, "title")`
 
 If you have any questions or comments, these can be sent to robert.bradley@merton.oxon.org, or via my website (http://www.robert-bradley.co.uk).
 
