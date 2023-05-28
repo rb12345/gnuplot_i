@@ -1,7 +1,7 @@
 Extended GNUPlot wrapper
 ========================
 
-This is a modification of the gnuplot_i library by Nicolas Devillard, which enables the following functionality:
+This is a modification of the `gnuplot_i` library by Nicolas Devillard, which enables the following functionality:
 
 *    3D plots, using gnuplot_splot(handle,x,y,z,n,"title");
 *    Setting z-axis labels with gnuplot_set_zlabel(handle,"z-axis label");
