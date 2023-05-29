@@ -1,4 +1,4 @@
-gnuplot C library interface
+gnuplot C interface library
 ===========================
 
 This is a modification of the gnuplot_i library by Nicolas Devillard, with the following enhancements:
