@@ -28,9 +28,9 @@
 #include <fcntl.h>
 #include <time.h>
 
-/** Maximal number of simultaneous temporary files */
+/** Maximum number of simultaneous temporary files */
 #define GP_MAX_TMP_FILES 64
-/** Maximal size of a temporary file name */
+/** Maximum amount of characters of a temporary file name */
 #define GP_TMP_NAME_SIZE 512
 
 /*---------------------------------------------------------------------------
@@ -60,7 +60,7 @@ typedef struct _GNUPLOT_CTRL_ {
 } gnuplot_ctrl;
 
 /*
-  gnuplot_point: Simple point struct to allow return of points to the
+  gnuplot_point is a point struct to allow the return of points to the
   `gnuplot_plot_obj_xy` function by callback functions.
 */
 
@@ -85,18 +85,18 @@ void gnuplot_close (gnuplot_ctrl *handle);
 void gnuplot_cmd (gnuplot_ctrl *handle, char *cmd, ...);
 void gnuplot_setstyle (gnuplot_ctrl *handle, char *plot_style);
 void gnuplot_setterm (gnuplot_ctrl *handle, char *terminal);
-void gnuplot_set_axislabel (gnuplot_ctrl *handle, char *label);
+void gnuplot_set_axislabel (gnuplot_ctrl *handle, char *label, char *axis);
 void gnuplot_resetplot (gnuplot_ctrl *handle);
 
 /* gnplot plotting functions */
 
 void gnuplot_plot_x (gnuplot_ctrl *handle, double *x, int n, char *title);
 void gnuplot_plot_xy (gnuplot_ctrl *handle, double *x, double *y, int n, char *title);
-int gnuplot_splot (gnuplot_ctrl *handle, double *x, double *y, double *z, int n, char *title);
-int gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int cols, char *title);
-int gnuplot_contour_plot (gnuplot_ctrl *handle, double *x, double *y, double *z, int nx, int ny, char *title);
-int gnuplot_splot_obj (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *, gnuplot_point *, int, int), int n, char *title);
-int gnuplot_plot_obj_xy (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *, gnuplot_point *, int, int), int n, char *title);
+void gnuplot_splot (gnuplot_ctrl *handle, double *x, double *y, double *z, int n, char *title);
+void gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int cols, char *title);
+void gnuplot_contour_plot (gnuplot_ctrl *handle, double *x, double *y, double *z, int nx, int ny, char *title);
+void gnuplot_splot_obj (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *, gnuplot_point *, int, int), int n, char *title);
+void gnuplot_plot_obj_xy (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *, gnuplot_point *, int, int), int n, char *title);
 void gnuplot_plot_once (char *title, char *style, char *label_x, char *label_y, double *x, double *y, int n);
 void gnuplot_plot_slope (gnuplot_ctrl *handle, double a, double b, char *title);
 void gnuplot_plot_equation (gnuplot_ctrl *handle, char *equation, char *title);
