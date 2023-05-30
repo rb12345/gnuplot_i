@@ -1,7 +1,16 @@
 gnuplot C interface library
 ===========================
 
-This is a modification of the gnuplot_i library by Nicolas Devillard, which enables developers to create gnuplots from their C programs. It features the following enhancements:
+Overview
+--------
+
+This is a modification of the `gnuplot_i` interface library by Nicolas Devillard, which enables developers to create [gnuplots](http://www.gnuplot.info/) from their C programs.
+
+
+Enhancements
+------------
+
+It features the following enhancements:
 
 * 3D plots, using `gnuplot_splot(handle, x, y, z, n, "title")`.
 * Setting z-axis labels with `gnuplot_set_zlabel(handle, "z-axis label")`.
