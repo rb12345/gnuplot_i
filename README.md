@@ -37,5 +37,5 @@ Changelog
 Documentation
 -------------
 
-Documentation of macros, includes, functions and prototypes can be straightforwardly generated using doxygen /doxywizard.
+Documentation of macros, includes, functions and prototypes can be straightforwardly generated using [https://www.doxygen.nl doxygen] / doxywizard.
 
