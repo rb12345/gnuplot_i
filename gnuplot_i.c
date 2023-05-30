@@ -32,14 +32,16 @@
   Defines
  ---------------------------------------------------------------------------*/
 
-/** Maximal size of a gnuplot command */
+/** Maximum amount of characters of a gnuplot command */
 #define GP_CMD_SIZE 2048
-/** Maximal size of a plot title */
+/** Maximum amount of characters of a plot title */
 #define GP_TITLE_SIZE 80
-/** Maximal size for an equation */
+/** Maximum amount of characters for an equation */
 #define GP_EQ_SIZE 512
-/** Maximal size of a name in the PATH */
+/** Maximum amount of characters of a name in the PATH */
 #define PATH_MAXNAMESZ 4096
+/** Error message display */
+#define FAIL_IF(EXP, MSG) ({ if (EXP) { printf("ERROR: " MSG "\n"); exit(EXIT_FAILURE); }})
 
 #ifdef _WIN32
 #undef P_tmpdir
@@ -64,18 +66,26 @@
 #include <windows.h>
 #include <fcntl.h>
 
-int mkstemp (char *templ) {
+/*-------------------------------------------------------------------------*/
+/**
+  @brief    Create temporary output pipe with randomised name.
+  @param    name Name of the pipe.
+  @return   int 
+ */
+/*-------------------------------------------------------------------------*/
+
+int mkstemp (char *name) {
   srand(time(NULL));
   int i;
-  char *start = strstr(templ, "XXXXXX");
+  char *start = strstr(name, "XXXXXX");
 
   for (i = 0; i < 6; i++) {
-    start[i] = (char) (48 + ((int) rand() * 10 / 32768.0));
+    start[i] = (char) (48 + ((int) rand() * 10 / 32768.0));  // 16-bits solution only?
   }
-  i = open(templ, O_RDWR | O_CREAT);
+  i = open(name, O_RDWR | O_CREAT);
   if (i != -1) {
-    DWORD dwFileAttr = GetFileAttributes(templ);
-    SetFileAttributes(templ, dwFileAttr & !FILE_ATTRIBUTE_READONLY);
+    DWORD dwFileAttr = GetFileAttributes(name);
+    SetFileAttributes(name, dwFileAttr & !FILE_ATTRIBUTE_READONLY);
   }
   return i;
 }
@@ -125,25 +135,22 @@ char *gnuplot_get_program_path (char *pname) {
   /* Try in all paths given in the PATH variable */
   buf[0] = 0;
   path = getenv("PATH");
-  if (path != NULL) {
-    for (i = 0; path[i]; ) {
-      for (j = i; (path[j]) && (path[j] != ':'); j++);
-      lg = j - i;
-      strncpy(buf, path + i, lg);
-      if (lg == 0) buf[lg++] = '.';
-      buf[lg++] = '/';
-      strcpy(buf + lg, pname);
-      if (access(buf, X_OK) == 0) /* Found it! */ break;
-      buf[0] = 0;
-      i = j;
-      if (path[i] == ':') i++;
-    }
-  } else {
-    fprintf(stderr, "PATH variable not set\n");
+  FAIL_IF ((path != NULL), "PATH variable not set");
+  for (i = 0; path[i]; ) {
+    for (j = i; (path[j]) && (path[j] != ':'); j++);
+    lg = j - i;
+    strncpy(buf, path + i, lg);
+    if (lg == 0) buf[lg++] = '.';
+    buf[lg++] = '/';
+    strcpy(buf + lg, pname);
+    if (access(buf, X_OK) == 0) /* Found it! */ break;
+    buf[0] = 0;
+    i = j;
+    if (path[i] == ':') i++;
   }
 
-  /* If the buffer is still empty, the command was not found */
-  if (buf[0] == 0) return NULL;
+  /* If the buffer is still empty, then the command was not found */
+  FAIL_IF (buf[0] == 0, "Command not found in PATH variable");
 
   /* Otherwise truncate the command name to yield path only */
   lg = strlen(buf) - 1;
@@ -172,21 +179,13 @@ gnuplot_ctrl *gnuplot_init (void) {
   gnuplot_ctrl *handle;
 #ifndef _WIN32
 #ifndef __APPLE__
-  if (getenv("DISPLAY") == NULL) {
-    fprintf(stderr, "Cannot find DISPLAY variable: is it set?\n");
-  }
+  FAIL_IF (getenv("DISPLAY") == NULL, "Cannot find DISPLAY variable: has it been set?");
 #endif
 #endif
 #ifndef _WIN32
-  if (gnuplot_get_program_path("gnuplot") == NULL) {
-    fprintf(stderr, "Cannot find gnuplot in your PATH");
-    return NULL;
-  }
+  FAIL_IF (gnuplot_get_program_path("gnuplot") == NULL, "Cannot find gnuplot in your PATH");
 #endif
-  if (gnuplot_get_program_path(GNUPLOT_EXEC) == NULL) {
-    fprintf(stderr, "Cannot find gnuplot in your PATH");
-    return NULL;
-  }
+  FAIL_IF (gnuplot_get_program_path(GNUPLOT_EXEC) == NULL, "Cannot find gnuplot in your PATH");
 
   /* Structure initialization: */
   handle = (gnuplot_ctrl *)malloc(sizeof(gnuplot_ctrl));
@@ -195,10 +194,11 @@ gnuplot_ctrl *gnuplot_init (void) {
   handle->ntmp = 0;
   handle->gnucmd = popen(GNUPLOT_EXEC, "w");
   if (handle->gnucmd == NULL) {
-    fprintf(stderr, "Error starting gnuplot\n");
     free(handle);
-    return NULL;
+    FAIL_IF (0 == 0, "Error starting gnuplot");
   }
+
+  /* Set terminal output type */
 #ifdef _WIN32
   gnuplot_setterm(handle, "windows");
 #elif __APPLE__
@@ -227,16 +227,12 @@ gnuplot_ctrl *gnuplot_init (void) {
 /*--------------------------------------------------------------------------*/
 
 void gnuplot_close (gnuplot_ctrl *handle) {
-  if (pclose(handle->gnucmd) == -1) {
-    fprintf(stderr, "Cannot close communication to gnuplot\n");
-    return;
-  }
+  FAIL_IF (pclose(handle->gnucmd) == -1, "Cannot close communication to gnuplot");
   if (handle->ntmp) {
     for (int i = 0; i < handle->ntmp; i++) {
 #ifdef _WIN32
       int x = remove(handle->to_delete[i]);
-      if (x)
-        printf("Cannot delete %s: error number %d\n", handle->to_delete[i], errno);
+      if (x) printf("Cannot delete %s: error number %d\n", handle->to_delete[i], errno);
 #else
       remove(handle->to_delete[i]);
 #endif
@@ -327,8 +323,12 @@ void gnuplot_setstyle (gnuplot_ctrl *handle, char *plot_style) {
   @param    terminal  Terminal name (character string)
   @return   void
 
+  In gnuplot the terminal type is the output channel to which the plot should be
+  displayed on. This is typically 'x11' for Linux, 'acqua' for OSX or either
+  'wxt' or 'windows' for MS-Windows.
+
   No attempt is made to check the validity of the terminal name. This function
-  simply makes a note of it and calls gnuplot_cmd to change the name.
+  simply makes a note of it and calls `gnuplot_cmd` to change the name.
  */
 /*--------------------------------------------------------------------------*/
 
@@ -358,7 +358,6 @@ void gnuplot_set_axislabel (gnuplot_ctrl *handle, char *label, char *axis) {
 
   sprintf(cmd, "set %slabel \"%s\"", axis, label);
   gnuplot_cmd(handle, cmd);
-  return;
 }
 
 /*-------------------------------------------------------------------------*/
@@ -379,7 +378,6 @@ void gnuplot_resetplot (gnuplot_ctrl *handle) {
   }
   handle->ntmp = 0;
   handle->nplots = 0;
-  return;
 }
 
 /*-------------------------------------------------------------------------*/
@@ -416,30 +414,14 @@ void gnuplot_plot_x (gnuplot_ctrl *handle, double *x, int n, char *title) {
   char name[128];
   char cmd[GP_CMD_SIZE];
 
-  /* Trap errors on mandatory arguments */
-  if (handle == NULL || x == NULL || (n < 1)) {
-    fprintf(stderr, "One of the parameters to `%s` has been misspecified", __func__);
-    return;
-  }
-
-  /* Do not open a new gnuplot session if one is already open */
-  if (handle->nplots > 0) {
-    fprintf(stderr, "A gnuplot session is already open and held by aother process");
-    return;
-  }
-
-  /* Open one more temporary file? */
-  if (handle->ntmp == GP_MAX_TMP_FILES - 1) {
-    fprintf(stderr, "Maximum number of temporary files reached (%d): cannot open more", GP_MAX_TMP_FILES);
-    return;
-  }
+  /* Error handling: mandatory arguments, already open session, opening temporary file */
+  FAIL_IF (handle == NULL || x == NULL || (n < 1), "One of the parameters has been misspecified");
+  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by aother process");
+  FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
 
   /* Open temporary file for output */
   sprintf(name, GNUPLOT_TEMPFILE, P_tmpdir);
-  if ((tmpfd = mkstemp(name)) == -1) {
-    fprintf(stderr, "Cannot create temporary file: exiting plot");
-    return;
-  }
+  FAIL_IF ((tmpfd = mkstemp(name)) == -1, "Cannot create temporary file: exiting plot");
 
   /* Store file name in array for future deletion */
   strcpy(handle->to_delete[handle->ntmp], name);
@@ -462,7 +444,6 @@ void gnuplot_plot_x (gnuplot_ctrl *handle, double *x, int n, char *title) {
   /* Send command to gnuplot */
   gnuplot_cmd(handle, cmd);
   handle->nplots++;
-  return;
 }
 
 /*-------------------------------------------------------------------------*/
@@ -503,29 +484,13 @@ void gnuplot_plot_xy (gnuplot_ctrl *handle, double *x, double *y, int n, char *t
   char cmd[GP_CMD_SIZE];
 
   /* Trap errors on mandatory arguments */
-  if (handle == NULL || x == NULL || y == NULL || (n < 1)) {
-    fprintf(stderr, "One of the parameters to `%s` has been misspecified", __func__);
-    return;
-  }
-
-  /* Do not open a new gnuplot session if one is already open */
-  if (handle->nplots > 0) {
-    fprintf(stderr, "A gnuplot session is already open and held by aother process");
-    return;
-  }
-
-  /* Open one more temporary file? */
-  if (handle->ntmp == GP_MAX_TMP_FILES - 1) {
-    fprintf(stderr, "Maximum number of temporary files reached (%d): cannot open more", GP_MAX_TMP_FILES);
-    return;
-  }
+  FAIL_IF (handle == NULL || x == NULL || y == NULL || (n < 1), "One of the parameters has been misspecified");
+  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by aother process");
+  FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
 
   /* Open temporary file for output */
   sprintf(name, GNUPLOT_TEMPFILE, P_tmpdir);
-  if ((tmpfd = mkstemp(name)) == -1) {
-    fprintf(stderr, "Cannot create temporary file: exiting plot");
-    return;
-  }
+  FAIL_IF ((tmpfd = mkstemp(name)) == -1, "Cannot create temporary file: exiting plot");
 
   /* Store file name in array for future deletion */
   strcpy(handle->to_delete[handle->ntmp], name);
@@ -548,7 +513,6 @@ void gnuplot_plot_xy (gnuplot_ctrl *handle, double *x, double *y, int n, char *t
   /* Send command to gnuplot */
   gnuplot_cmd(handle, cmd);
   handle->nplots++;
-  return;
 }
 
 /*-------------------------------------------------------------------------*/
@@ -560,9 +524,9 @@ void gnuplot_plot_xy (gnuplot_ctrl *handle, double *x, double *y, int n, char *t
   @param    z         Pointer to a list of z coordinates.
   @param    n         Number of doubles in x (same for y and z).
   @param    title     Title of the plot (can be NULL).
-  @return   int       1 if error encountered, 0 otherwise
+  @return   void
 
-  Based on gnuplot_plot_xy, modifications by Robert Bradley 12/10/2004
+  Based on `gnuplot_plot_xy`, modifications by Robert Bradley 12/10/2004
 
   Plots a 3d graph from a list of points, passed as arrays x, y and z.
   All arrays are assumed to contain the same number of values.
@@ -586,35 +550,19 @@ void gnuplot_plot_xy (gnuplot_ctrl *handle, double *x, double *y, int n, char *t
  */
 /*--------------------------------------------------------------------------*/
 
-int gnuplot_splot (gnuplot_ctrl *handle, double *x, double *y, double *z, int n, char *title) {
+void gnuplot_splot (gnuplot_ctrl *handle, double *x, double *y, double *z, int n, char *title) {
   int tmpfd;
   char name[128];
   char cmd[GP_CMD_SIZE];
 
   /* Trap errors on mandatory arguments */
-  if (handle == NULL || x == NULL || y == NULL || (n < 1)) {
-    fprintf(stderr, "One of the parameters to `%s` has been misspecified", __func__);
-    return 1;
-  }
-
-  /* Do not open a new gnuplot session if one is already open */
-  if (handle->nplots > 0) {
-    fprintf(stderr, "A gnuplot session is already open and held by aother process");
-    return 1;
-  }
-
-  /* Open one more temporary file? */
-  if (handle->ntmp == GP_MAX_TMP_FILES - 1) {
-    fprintf(stderr, "Maximum number of temporary files reached (%d): cannot open more", GP_MAX_TMP_FILES);
-    return 1;
-  }
+  FAIL_IF (handle == NULL || x == NULL || y == NULL || (n < 1), "One of the parameters has been misspecified");
+  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by aother process");
+  FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
 
   /* Open temporary file for output */
   sprintf(name, GNUPLOT_TEMPFILE, P_tmpdir);
-  if ((tmpfd = mkstemp(name)) == -1) {
-    fprintf(stderr, "Cannot create temporary file: exiting plot");
-    return 1;
-  }
+  FAIL_IF ((tmpfd = mkstemp(name)) == -1, "Cannot create temporary file: exiting plot");
 
   /* Store file name in array for future deletion */
   strcpy(handle->to_delete[handle->ntmp], name);
@@ -637,7 +585,6 @@ int gnuplot_splot (gnuplot_ctrl *handle, double *x, double *y, double *z, int n,
   /* Send command to gnuplot */
   gnuplot_cmd(handle, cmd);
   handle->nplots++;
-  return 0;
 }
 
 /*-------------------------------------------------------------------------*/
@@ -648,7 +595,7 @@ int gnuplot_splot (gnuplot_ctrl *handle, double *x, double *y, double *z, int n,
   @param    rows      Number of rows (y points).
   @param    cols      Number of columns (x points).
   @param    title     Title of the plot (can be NULL).
-  @return   int       1 if error encountered, 0 otherwise
+  @return   void
 
   Example:
 
@@ -662,35 +609,19 @@ int gnuplot_splot (gnuplot_ctrl *handle, double *x, double *y, double *z, int n,
  */
 /*--------------------------------------------------------------------------*/
 
-int gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int cols, char *title) {
+void gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int cols, char *title) {
   int tmpfd;
   char name[128];
   char cmd[GP_CMD_SIZE];
 
   /* Trap errors on mandatory arguments */
-  if (handle == NULL || points == NULL || (rows < 1) || (cols < 1)) {
-    fprintf(stderr, "One of the parameters to `%s` has been misspecified", __func__);
-    return 1;
-  }
-
-  /* Do not open a new gnuplot session if one is already open */
-  if (handle->nplots > 0) {
-    fprintf(stderr, "A gnuplot session is already open and held by aother process");
-    return 1;
-  }
-
-  /* Open one more temporary file? */
-  if (handle->ntmp == GP_MAX_TMP_FILES - 1) {
-    fprintf(stderr, "Maximum number of temporary files reached (%d): cannot open more", GP_MAX_TMP_FILES);
-    return 1;
-  }
+  FAIL_IF (handle == NULL || points == NULL || (rows < 1) || (cols < 1), "One of the parameters has been misspecified");
+  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by aother process");
+  FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
 
   /* Open temporary file for output */
   sprintf(name, GNUPLOT_TEMPFILE, P_tmpdir);
-  if ((tmpfd = mkstemp(name)) == -1) {
-    fprintf(stderr, "Cannot create temporary file: exiting plot");
-    return 1;
-  }
+  FAIL_IF ((tmpfd = mkstemp(name)) == -1, "Cannot create temporary file: exiting plot");
 
   /* Store file name in array for future deletion */
   strcpy(handle->to_delete[handle->ntmp], name);
@@ -717,7 +648,6 @@ int gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int cols
   /* Send command to gnuplot */
   gnuplot_cmd(handle, cmd);
   handle->nplots++;
-  return 0;
 }
 
 /*-------------------------------------------------------------------------*/
@@ -730,9 +660,9 @@ int gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int cols
   @param    nx        Number of doubles in x-direction.
   @param    ny        Number of doubles in y-direction.
   @param    title     Title of the plot (can be NULL).
-  @return   int       1 if error encountered, 0 otherwise
+  @return   void
 
-  Based on gnuplot_splot, modifications by Robert Bradley 23/11/2005
+  Based on `gnuplot_splot`, modifications by Robert Bradley 23/11/2005
 
   Plots a contour plot from a list of points, passed as arrays x, y and z.
 
@@ -760,35 +690,19 @@ int gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int cols
  */
 /*--------------------------------------------------------------------------*/
 
-int gnuplot_contour_plot (gnuplot_ctrl *handle, double *x, double *y, double *z, int nx, int ny, char *title) {
+void gnuplot_contour_plot (gnuplot_ctrl *handle, double *x, double *y, double *z, int nx, int ny, char *title) {
   int tmpfd;
   char name[128];
   char cmd[GP_CMD_SIZE];
 
   /* Trap errors on mandatory arguments */
-  if (handle == NULL || x == NULL || y == NULL || (nx < 1) || (ny < 1)) {
-    fprintf(stderr, "One of the parameters to `%s` has been misspecified", __func__);
-    return 1;
-  }
-
-  /* Do not open a new gnuplot session if one is already open */
-  if (handle->nplots > 0) {
-    fprintf(stderr, "A gnuplot session is already open and held by aother process");
-    return 1;
-  }
-
-  /* Open one more temporary file? */
-  if (handle->ntmp == GP_MAX_TMP_FILES - 1) {
-    fprintf(stderr, "Maximum number of temporary files reached (%d): cannot open more", GP_MAX_TMP_FILES);
-    return 1;
-  }
+  FAIL_IF (handle == NULL || x == NULL || y == NULL || (nx < 1) || (ny < 1), "One of the parameters has been misspecified");
+  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by aother process");
+  FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
 
   /* Open temporary file for output */
   sprintf(name, GNUPLOT_TEMPFILE, P_tmpdir);
-  if ((tmpfd = mkstemp(name)) == -1) {
-    fprintf(stderr, "Cannot create temporary file: exiting plot");
-    return 1;
-  }
+  FAIL_IF ((tmpfd = mkstemp(name)) == -1, "Cannot create temporary file: exiting plot");
 
   /* Store file name in array for future deletion */
   strcpy(handle->to_delete[handle->ntmp], name);
@@ -820,18 +734,17 @@ int gnuplot_contour_plot (gnuplot_ctrl *handle, double *x, double *y, double *z,
   /* Send command to gnuplot */
   gnuplot_cmd(handle, cmd);
   handle->nplots++;
-  return 0;
 }
 
 /*-------------------------------------------------------------------------*/
 /**
-  @brief    Plot a 3d graph using callback functions to return the points
+  @brief    Plot a 3d graph using callback functions to return the points.
   @param    handle    Gnuplot session control handle.
   @param    obj       Pointer to an arbitrary object.
   @param    getPoint  Pointer to a callback function.
   @param    n         Number of doubles in x (y and z must be the the same).
   @param    title     Title of the plot (can be NULL).
-  @return   int       1 if error encountered, 0 otherwise
+  @return   void
 
   Calback:
 
@@ -844,35 +757,19 @@ int gnuplot_contour_plot (gnuplot_ctrl *handle, double *x, double *y, double *z,
  */
 /*--------------------------------------------------------------------------*/
 
-int gnuplot_splot_obj (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *, gnuplot_point *, int, int), int n, char *title) {
+void gnuplot_splot_obj (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *, gnuplot_point *, int, int), int n, char *title) {
   int tmpfd;
   char name[128];
   char cmd[GP_CMD_SIZE];
 
   /* Trap errors on mandatory arguments */
-  if (handle == NULL || getPoint == NULL || (n < 1)) {
-    fprintf(stderr, "One of the parameters to `%s` has been misspecified", __func__);
-    return 1;
-  }
-
-  /* Do not open a new gnuplot session if one is already open */
-  if (handle->nplots > 0) {
-    fprintf(stderr, "A gnuplot session is already open and held by aother process");
-    return 1;
-  }
-
-  /* Open one more temporary file? */
-  if (handle->ntmp == GP_MAX_TMP_FILES - 1) {
-    fprintf(stderr, "Maximum number of temporary files reached (%d): cannot open more", GP_MAX_TMP_FILES);
-    return 1;
-  }
+  FAIL_IF (handle == NULL || getPoint == NULL || (n < 1), "One of the parameters has been misspecified");
+  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by aother process");
+  FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
 
   /* Open temporary file for output */
   sprintf(name, GNUPLOT_TEMPFILE, P_tmpdir);
-  if ((tmpfd = mkstemp(name)) == -1) {
-    fprintf(stderr, "Cannot create temporary file: exiting plot");
-    return 1;
-  }
+  FAIL_IF ((tmpfd = mkstemp(name)) == -1, "Cannot create temporary file: exiting plot");
 
   /* Store file name in array for future deletion */
   strcpy(handle->to_delete[handle->ntmp], name);
@@ -897,7 +794,6 @@ int gnuplot_splot_obj (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *,
   /* Send command to gnuplot */
   gnuplot_cmd(handle, cmd);
   handle->nplots++;
-  return 0;
 }
 
 /*-------------------------------------------------------------------------*/
@@ -908,7 +804,7 @@ int gnuplot_splot_obj (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *,
   @param    getPoint  Pointer to a callback function.
   @param    n         Number of points.
   @param    title     Title of the plot (can be NULL).
-  @return   int       1 if error encountered, 0 otherwise
+  @return   void
 
   The callback function is of the following form, and is called once for each
   point plotted:
@@ -922,7 +818,7 @@ int gnuplot_splot_obj (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *,
 
   Example:
 
-  Here points is an array of points:
+  Here `points` is an array of points:
 
   @code
     void PlotPoint(void *obj, gnuplot_point *point, int i, int n) {
@@ -948,35 +844,19 @@ int gnuplot_splot_obj (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *,
  */
 /*-------------------------------------------------------------------------*/
 
-int gnuplot_plot_obj_xy (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *, gnuplot_point *, int, int), int n, char *title) {
+void gnuplot_plot_obj_xy (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *, gnuplot_point *, int, int), int n, char *title) {
   int tmpfd;
   char name[128];
   char cmd[GP_CMD_SIZE];
 
   /* Trap errors on mandatory arguments */
-  if (handle == NULL || getPoint == NULL || (n < 1)) {
-    fprintf(stderr, "One of the parameters to `%s` has been misspecified", __func__);
-    return 1;
-  }
-
-  /* Do not open a new gnuplot session if one is already open */
-  if (handle->nplots > 0) {
-    fprintf(stderr, "A gnuplot session is already open and held by aother process");
-    return 1;
-  }
-
-  /* Open one more temporary file? */
-  if (handle->ntmp == GP_MAX_TMP_FILES - 1) {
-    fprintf(stderr, "Maximum number of temporary files reached (%d): cannot open more", GP_MAX_TMP_FILES);
-    return 1;
-  }
+  FAIL_IF (handle == NULL || getPoint == NULL || (n < 1), "One of the parameters has been misspecified");
+  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by aother process");
+  FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
 
   /* Open temporary file for output */
   sprintf(name, GNUPLOT_TEMPFILE, P_tmpdir);
-  if ((tmpfd = mkstemp(name)) == -1) {
-    fprintf(stderr, "Cannot create temporary file: exiting plot");
-    return 1;
-  }
+  FAIL_IF ((tmpfd = mkstemp(name)) == -1, "Cannot create temporary file: exiting plot");
 
   /* Store file name in array for future deletion */
   strcpy(handle->to_delete[handle->ntmp], name);
@@ -1001,7 +881,6 @@ int gnuplot_plot_obj_xy (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void 
   /* Send command to gnuplot */
   gnuplot_cmd(handle, cmd);
   handle->nplots++;
-  return 0;
 }
 
 /*-------------------------------------------------------------------------*/
@@ -1035,8 +914,8 @@ void gnuplot_plot_once (char *title, char *style, char *label_x, char *label_y, 
 
   /* Generate commands to send to gnuplot */
   gnuplot_setstyle(handle, (style == NULL) ? "lines" : style);
-  gnuplot_set_axislabel(handle, (label_x == NULL) ? 'X' : label_x, 'x');
-  gnuplot_set_axislabel(handle, (label_y == NULL) ? 'Y' : label_y, 'y');
+  gnuplot_set_axislabel(handle, (label_x == NULL) ? "X" : label_x, "x");
+  gnuplot_set_axislabel(handle, (label_y == NULL) ? "Y" : label_y, "y");
   if (y == NULL) {
     gnuplot_plot_x(handle, x, n, title);
   } else {
@@ -1045,7 +924,6 @@ void gnuplot_plot_once (char *title, char *style, char *label_x, char *label_y, 
   printf("Press Enter to continue\n");
   while (getchar() != '\n') {}
   gnuplot_close(handle);
-  return;
 }
 
 /*-------------------------------------------------------------------------*/
@@ -1083,7 +961,6 @@ void gnuplot_plot_slope (gnuplot_ctrl *handle, double a, double b, char *title) 
   sprintf(cmd, "%s %g * x + %g title \"%s\" with %s", (handle->nplots > 0) ? "replot" : "plot", a, b, title_str, handle->pstyle);
   gnuplot_cmd(handle, cmd);
   handle->nplots++;
-  return;
 }
 
 /*-------------------------------------------------------------------------*/
@@ -1121,12 +998,11 @@ void gnuplot_plot_equation (gnuplot_ctrl *handle, char *equation, char *title) {
   sprintf(cmd, "%s %s title \"%s\" with %s", plot_str, equation, title_str, handle->pstyle);
   gnuplot_cmd(handle, cmd);
   handle->nplots++;
-  return;
 }
 
 /*-------------------------------------------------------------------------*/
 /**
-  @brief    Save a graph as a Postscript file on storage
+  @brief    Save a graph as a Postscript file on storage.
   @param    handle      Gnuplot session control handle.
   @param    filename    Filename to write to.
   @param    color       Any character to retain colors, no colors if NULL
