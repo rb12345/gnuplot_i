@@ -1,4 +1,5 @@
 * More unit tests to be added as not all functions are being covered by tests, notably 3D plots, such as contourplots and heatmaps.
+* Further refactoring.
 * Plotting styles have been added to gnuplot since this interface library was completed, hence further testing and documentation on this.
 * More field testing is needed: 
   - Does the current version still work on Windows / OS-X / other operating systems? 
