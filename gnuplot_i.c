@@ -135,7 +135,7 @@ char *gnuplot_get_program_path (char *pname) {
   /* Try in all paths given in the PATH variable */
   buf[0] = 0;
   path = getenv("PATH");
-  FAIL_IF ((path != NULL), "PATH variable not set");
+  FAIL_IF (path == NULL, "PATH variable not set, is gnuplot installed?");
   for (i = 0; path[i]; ) {
     for (j = i; (path[j]) && (path[j] != ':'); j++);
     lg = j - i;
@@ -282,7 +282,7 @@ void gnuplot_cmd (gnuplot_ctrl *handle, char *cmd, ...) {
 /**
   @brief    Change the plotting style of a gnuplot session.
   @param    handle      Gnuplot session control handle
-  @param    plot_style  Plotting-style to use (character string)
+  @param    plot_style  Plotting-style (character string)
   @return   void
 
   The provided plotting style is one of the following character strings:
@@ -292,9 +292,9 @@ void gnuplot_cmd (gnuplot_ctrl *handle, char *cmd, ...) {
   - impulses
   - dots
   - steps
-  - errorbars
+  - errorbars (deprecated?)
   - boxes
-  - boxeserrorbars
+  - boxerrorbars
  */
 /*--------------------------------------------------------------------------*/
 
@@ -324,11 +324,17 @@ void gnuplot_setstyle (gnuplot_ctrl *handle, char *plot_style) {
   @return   void
 
   In gnuplot the terminal type is the output channel to which the plot should be
-  displayed on. This is typically 'x11' for Linux, 'acqua' for OSX or either
-  'wxt' or 'windows' for MS-Windows.
+  displayed on.
 
-  No attempt is made to check the validity of the terminal name. This function
-  simply makes a note of it and calls `gnuplot_cmd` to change the name.
+  The provided terminal is one of the following character strings:
+  - `x11` for Linux, no anti-aliasing (default)
+  - `wxt` or `qt` for Linux, with anti-aliasing
+  - `aqua` for OSX
+  - `wxt` or `windows` for MS-Windows.
+
+  No check is made on the validity of the terminal name. This function
+  calls `gnuplot_cmd` with the provided terminal name. If this function is not
+  called, then the `x11` terminal type will be used.
  */
 /*--------------------------------------------------------------------------*/
 
@@ -828,9 +834,9 @@ void gnuplot_splot_obj (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *
     }
 
     int main (int argc, char *argv[]) {
-       ...
-       gnuplot_plot_obj_xy(handle, points, PlotPoint, pCount, "Points");
-       ...
+      ...
+      gnuplot_plot_obj_xy(handle, points, PlotPoint, pCount, "Points");
+      ...
     }
   @endcode
 
