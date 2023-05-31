@@ -1,0 +1,7 @@
+* More unit tests to be added as not all functions are being covered by tests, notably 3D plots, such as contourplots and heatmaps.
+* Plotting styles have been added to gnuplot since this interface library was completed, hence further testing and documentation on this.
+* More field testing is needed: 
+  - Does the current version still work on Windows / OS-X / other operating systems? 
+  - How does it perform in high-volume or high-performance environments?
+  - Are there limitations which need to be looked at, for example the maximum amount of open gnuplot files?
+* The file gnuplot_i.txt can probably be marked down.
