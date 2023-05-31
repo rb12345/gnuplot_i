@@ -489,7 +489,7 @@ void gnuplot_plot_xy (gnuplot_ctrl *handle, double *x, double *y, int n, char *t
   char name[128];
   char cmd[GP_CMD_SIZE];
 
-  /* Trap errors on mandatory arguments */
+  /* Error handling: mandatory arguments, already open session, opening temporary file */
   FAIL_IF (handle == NULL || x == NULL || y == NULL || (n < 1), "One of the parameters has been misspecified");
   FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by aother process");
   FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
@@ -561,7 +561,7 @@ void gnuplot_splot (gnuplot_ctrl *handle, double *x, double *y, double *z, int n
   char name[128];
   char cmd[GP_CMD_SIZE];
 
-  /* Trap errors on mandatory arguments */
+  /* Error handling: mandatory arguments, already open session, opening temporary file */
   FAIL_IF (handle == NULL || x == NULL || y == NULL || (n < 1), "One of the parameters has been misspecified");
   FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by aother process");
   FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
@@ -620,7 +620,7 @@ void gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int col
   char name[128];
   char cmd[GP_CMD_SIZE];
 
-  /* Trap errors on mandatory arguments */
+  /* Error handling: mandatory arguments, already open session, opening temporary file */
   FAIL_IF (handle == NULL || points == NULL || (rows < 1) || (cols < 1), "One of the parameters has been misspecified");
   FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by aother process");
   FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
@@ -701,7 +701,7 @@ void gnuplot_contour_plot (gnuplot_ctrl *handle, double *x, double *y, double *z
   char name[128];
   char cmd[GP_CMD_SIZE];
 
-  /* Trap errors on mandatory arguments */
+  /* Error handling: mandatory arguments, already open session, opening temporary file */
   FAIL_IF (handle == NULL || x == NULL || y == NULL || (nx < 1) || (ny < 1), "One of the parameters has been misspecified");
   FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by aother process");
   FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
@@ -768,7 +768,7 @@ void gnuplot_splot_obj (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *
   char name[128];
   char cmd[GP_CMD_SIZE];
 
-  /* Trap errors on mandatory arguments */
+  /* Error handling: mandatory arguments, already open session, opening temporary file */
   FAIL_IF (handle == NULL || getPoint == NULL || (n < 1), "One of the parameters has been misspecified");
   FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by aother process");
   FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
@@ -855,7 +855,7 @@ void gnuplot_plot_obj_xy (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void
   char name[128];
   char cmd[GP_CMD_SIZE];
 
-  /* Trap errors on mandatory arguments */
+  /* Error handling: mandatory arguments, already open session, opening temporary file */
   FAIL_IF (handle == NULL || getPoint == NULL || (n < 1), "One of the parameters has been misspecified");
   FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by aother process");
   FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
@@ -911,7 +911,7 @@ void gnuplot_plot_obj_xy (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void
 /*--------------------------------------------------------------------------*/
 
 void gnuplot_plot_once (char *title, char *style, char *label_x, char *label_y, double *x, double *y, int n) {
-  /* Define handle as local variable to isolate itfrom other gnuplot sessions */
+  /* Define handle as local variable to isolate it from other gnuplot sessions */
   gnuplot_ctrl *handle;
 
   /* Some error trapping */
@@ -1045,3 +1045,5 @@ void gnuplot_hardcopy (gnuplot_ctrl *handle, char *filename, char *color) {
 }
 
 #endif
+
+/* vim: set ts=4 et sw=4 tw=75 */
