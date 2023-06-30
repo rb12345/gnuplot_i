@@ -32,21 +32,21 @@
   Defines
  ---------------------------------------------------------------------------*/
 
-/** Maximum amount of characters of a gnuplot command */
+/** Maximum amount of characters of a gnuplot command. */
 #define GP_CMD_SIZE 2048
-/** Maximum amount of characters of a plot title */
+/** Maximum amount of characters of a plot title. */
 #define GP_TITLE_SIZE 80
-/** Maximum amount of characters for an equation */
+/** Maximum amount of characters for an equation y=f(x). */
 #define GP_EQ_SIZE 512
-/** Maximum amount of characters of a name in the PATH */
+/** Maximum amount of characters of a name in the PATH. */
 #define PATH_MAXNAMESZ 4096
-/** Error message display */
+/** Error message display. */
 #define FAIL_IF(EXP, MSG) ({ if (EXP) { printf("ERROR: " MSG "\n"); exit(EXIT_FAILURE); }})
 
 #ifdef _WIN32
 #undef P_tmpdir
 #endif
-/** Define P_tmpdir if not defined; this is normally a POSIX symbol */
+/** Define `P_tmpdir` if not defined; this is normally a POSIX symbol. */
 #ifndef P_tmpdir
 #define P_tmpdir "."
 #endif
@@ -216,7 +216,7 @@ gnuplot_ctrl *gnuplot_init (void) {
 /*-------------------------------------------------------------------------*/
 /**
   @brief    Closes a gnuplot session previously opened by gnuplot_init()
-  @param    handle Gnuplot session control handle.
+  @param    handle    Gnuplot session control handle.
   @return   void
 
   Kills the child process-ID (PID) and deletes all opened temporary files.
@@ -245,8 +245,8 @@ void gnuplot_close (gnuplot_ctrl *handle) {
 /*-------------------------------------------------------------------------*/
 /**
   @brief    Sends a command to an active gnuplot session.
-  @param    handle  Gnuplot session control handle
-  @param    cmd     Command to send, same as a printf statement.
+  @param    handle    Gnuplot session control handle
+  @param    cmd       Command to send, same as a printf statement.
 
   This sends a string to an active gnuplot session, to be executed.
   There is no way to know if the command has been successfully executed or not.
@@ -352,7 +352,7 @@ void gnuplot_setterm (gnuplot_ctrl *handle, char *terminal) {
   @brief    Sets the axis label of a gnuplot session.
   @param    handle  Gnuplot session control handle.
   @param    label   Character string to use for axis label.
-  @param    axis    Character string to to identify axis, ie 'x', 'y' or 'z'.
+  @param    axis    Character string to identify axis, ie "x", "y" or "z".
   @return   void
 
   Sets the axis label for a gnuplot session.
@@ -422,7 +422,7 @@ void gnuplot_plot_x (gnuplot_ctrl *handle, double *x, int n, char *title) {
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
   FAIL_IF (handle == NULL || x == NULL || (n < 1), "One of the parameters has been misspecified");
-  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by aother process");
+  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by another process");
   FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
 
   /* Open temporary file for output */
@@ -441,11 +441,7 @@ void gnuplot_plot_x (gnuplot_ctrl *handle, double *x, int n, char *title) {
   close(tmpfd);
 
   /* Command to be sent to gnuplot */
-  if (title == NULL) {
-    sprintf(cmd, "%s \"%s\" with %s", (handle->nplots > 0) ? "replot" : "plot", name, handle->pstyle);
-  } else {
-    sprintf(cmd, "%s \"%s\" title \"%s\" with %s", (handle->nplots > 0) ? "replot" : "plot", name, title, handle->pstyle);
-  }
+  sprintf(cmd, "%s \"%s\" title \"%s\" with %s", (handle->nplots > 0) ? "replot" : "plot", name, (title) ? title : "No title" , handle->pstyle);
 
   /* Send command to gnuplot */
   gnuplot_cmd(handle, cmd);
@@ -491,7 +487,7 @@ void gnuplot_plot_xy (gnuplot_ctrl *handle, double *x, double *y, int n, char *t
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
   FAIL_IF (handle == NULL || x == NULL || y == NULL || (n < 1), "One of the parameters has been misspecified");
-  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by aother process");
+  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by another process");
   FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
 
   /* Open temporary file for output */
@@ -510,11 +506,7 @@ void gnuplot_plot_xy (gnuplot_ctrl *handle, double *x, double *y, int n, char *t
   close(tmpfd);
 
   /* Command to be sent to gnuplot */
-  if (title == NULL) {
-    sprintf(cmd, "%s \"%s\" with %s", (handle->nplots > 0) ? "replot" : "plot", name, handle->pstyle);
-  } else {
-    sprintf(cmd, "%s \"%s\" title \"%s\" with %s", (handle->nplots > 0) ? "replot" : "plot", name, title, handle->pstyle);
-  }
+  sprintf(cmd, "%s \"%s\" title \"%s\" with %s", (handle->nplots > 0) ? "replot" : "plot", name, (title) ? title : "No title" , handle->pstyle);
 
   /* Send command to gnuplot */
   gnuplot_cmd(handle, cmd);
@@ -563,7 +555,7 @@ void gnuplot_splot (gnuplot_ctrl *handle, double *x, double *y, double *z, int n
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
   FAIL_IF (handle == NULL || x == NULL || y == NULL || (n < 1), "One of the parameters has been misspecified");
-  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by aother process");
+  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by another process");
   FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
 
   /* Open temporary file for output */
@@ -582,11 +574,7 @@ void gnuplot_splot (gnuplot_ctrl *handle, double *x, double *y, double *z, int n
   close(tmpfd);
 
   /* Command to be sent to gnuplot */
-  if (title == NULL) {
-    sprintf(cmd, "splot \"%s\" with %s", name, handle->pstyle);
-  } else {
-    sprintf(cmd, "splot \"%s\" title \"%s\" with %s", name, title, handle->pstyle);
-  }
+  sprintf(cmd, "splot \"%s\" title \"%s\" with %s", name, (title) ? title : "No title", handle->pstyle);
 
   /* Send command to gnuplot */
   gnuplot_cmd(handle, cmd);
@@ -622,7 +610,7 @@ void gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int col
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
   FAIL_IF (handle == NULL || points == NULL || (rows < 1) || (cols < 1), "One of the parameters has been misspecified");
-  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by aother process");
+  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by another process");
   FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
 
   /* Open temporary file for output */
@@ -645,11 +633,7 @@ void gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int col
   close(tmpfd);
 
   /* Command to be sent to gnuplot */
-  if (title == NULL) {
-    sprintf(cmd, "splot \"%s\" with %s", name, handle->pstyle);
-  } else {
-    sprintf(cmd, "splot \"%s\" title \"%s\" with %s", name, title, handle->pstyle);
-  }
+  sprintf(cmd, "splot \"%s\" title \"%s\" with %s", name, (title) ? title : "No title", handle->pstyle);
 
   /* Send command to gnuplot */
   gnuplot_cmd(handle, cmd);
@@ -703,7 +687,7 @@ void gnuplot_contour_plot (gnuplot_ctrl *handle, double *x, double *y, double *z
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
   FAIL_IF (handle == NULL || x == NULL || y == NULL || (nx < 1) || (ny < 1), "One of the parameters has been misspecified");
-  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by aother process");
+  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by another process");
   FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
 
   /* Open temporary file for output */
@@ -731,11 +715,8 @@ void gnuplot_contour_plot (gnuplot_ctrl *handle, double *x, double *y, double *z
   gnuplot_cmd(handle, "set view map");
   gnuplot_cmd(handle, "set view 0,0");
 
-  if (title == NULL) {
-    sprintf(cmd, "splot \"%s\" with %s", name, handle->pstyle);
-  } else {
-    sprintf(cmd, "splot \"%s\" title \"%s\" with %s", name, title, handle->pstyle);
-  }
+  /* Command to be sent to gnuplot */
+  sprintf(cmd, "splot \"%s\" title \"%s\" with %s", name, (title) ? title : "No title", handle->pstyle);
 
   /* Send command to gnuplot */
   gnuplot_cmd(handle, cmd);
@@ -770,7 +751,7 @@ void gnuplot_splot_obj (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
   FAIL_IF (handle == NULL || getPoint == NULL || (n < 1), "One of the parameters has been misspecified");
-  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by aother process");
+  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by another process");
   FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
 
   /* Open temporary file for output */
@@ -791,11 +772,7 @@ void gnuplot_splot_obj (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *
   close(tmpfd);
 
   /* Command to be sent to gnuplot */
-  if (title == NULL) {
-    sprintf(cmd, "splot \"%s\" with %s", name, handle->pstyle);
-  } else {
-    sprintf(cmd, "splot \"%s\" title \"%s\" with %s", name, title, handle->pstyle);
-  }
+  sprintf(cmd, "splot \"%s\" title \"%s\" with %s", name, (title) ? title : "No title", handle->pstyle);
 
   /* Send command to gnuplot */
   gnuplot_cmd(handle, cmd);
@@ -840,7 +817,7 @@ void gnuplot_splot_obj (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *
     }
   @endcode
 
-  Alternatively, PlotPoint could return values based on a complex formula and
+  Alternatively, `PlotPoint` could return values based on a complex formula and
   many sources of information. For example, it could be used to perform a
   Discrete Fourier Transform on an array of complex numbers, calculating one
   transformed point per call.
@@ -857,7 +834,7 @@ void gnuplot_plot_obj_xy (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
   FAIL_IF (handle == NULL || getPoint == NULL || (n < 1), "One of the parameters has been misspecified");
-  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by aother process");
+  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by another process");
   FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
 
   /* Open temporary file for output */
@@ -878,11 +855,7 @@ void gnuplot_plot_obj_xy (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void
   close(tmpfd);
 
   /* Command to be sent to gnuplot */
-  if (title == NULL) {
-    sprintf(cmd, "%s \"%s\" with %s", (handle->nplots > 0) ? "replot" : "plot", name, handle->pstyle);
-  } else {
-    sprintf(cmd, "%s \"%s\" title \"%s\" with %s", (handle->nplots > 0) ? "replot" : "plot", name, title, handle->pstyle);
-  }
+  sprintf(cmd, "%s \"%s\" title \"%s\" with %s", (handle->nplots > 0) ? "replot" : "plot", name, (title) ? title : "No title", handle->pstyle);
 
   /* Send command to gnuplot */
   gnuplot_cmd(handle, cmd);
@@ -940,7 +913,6 @@ void gnuplot_plot_once (char *title, char *style, char *label_x, char *label_y, 
   @param    b         Intercept.
   @param    title     Title of the plot (can be NULL).
   @return   void
-  @doc
 
   Plot a slope on a gnuplot session. The general form of the equation is y=ax+b,
   where only the slope a and intercept b are provided.
@@ -999,8 +971,8 @@ void gnuplot_plot_equation (gnuplot_ctrl *handle, char *equation, char *title) {
   char plot_str[GP_EQ_SIZE];
   char title_str[GP_TITLE_SIZE];
 
-  strcpy(title_str, (title == NULL) ? "no title" : title);
   strcpy(plot_str, (handle->nplots > 0) ? "replot" : "plot");
+  strcpy(title_str, (title == NULL) ? "no title" : title);
   sprintf(cmd, "%s %s title \"%s\" with %s", plot_str, equation, title_str, handle->pstyle);
   gnuplot_cmd(handle, cmd);
   handle->nplots++;
@@ -1027,7 +999,7 @@ void gnuplot_plot_equation (gnuplot_ctrl *handle, char *equation, char *title) {
     h = gnuplot_init();
     strcpy(eq, "sin(x) * cos(2*x)");
     gnuplot_plot_equation(h, eq, "Sine wave", normal);
-    gnuplot_hardcopy(h, "sinewave.ps");
+    gnuplot_hardcopy(h, "sinewave.ps", "color");
     gnuplot_close(h);
   @endcode
  */
