@@ -933,10 +933,8 @@ void gnuplot_plot_once (char *title, char *style, char *label_x, char *label_y, 
 
 void gnuplot_plot_slope (gnuplot_ctrl *handle, double a, double b, char *title) {
   char cmd[GP_CMD_SIZE];
-  char title_str[GP_TITLE_SIZE];
 
-  strcpy(title_str, (title == NULL) ? "no title" : title);
-  sprintf(cmd, "%s %g * x + %g title \"%s\" with %s", (handle->nplots > 0) ? "replot" : "plot", a, b, title_str, handle->pstyle);
+  sprintf(cmd, "%s %g * x + %g title \"%s\" with %s", (handle->nplots > 0) ? "replot" : "plot", a, b, (title) ? title : "No title", handle->pstyle);
   gnuplot_cmd(handle, cmd);
   handle->nplots++;
 }
