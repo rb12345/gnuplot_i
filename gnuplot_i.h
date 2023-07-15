@@ -11,7 +11,7 @@
   $Author:   ndevilla $
   $Date:     2003/01/27 08:58:04 $
   $Revision: 1.11.2 $
- */
+*/
 
 #ifndef _GNUPLOT_PIPES_H_
 #define _GNUPLOT_PIPES_H_
@@ -37,49 +37,48 @@
   New Types
  ---------------------------------------------------------------------------*/
 
+/*-------------------------------------------------------------------------*/
 /**
   @typedef  gnuplot_ctrl
   @brief    gnuplot session handle.
-  @param    gnucmd Pipe to gnuplot process.
-  @param    nplots Number of currently active plots.
-  @param    pstyle Current plotting style.
-  @param    term Save terminal name (used by hardcopy functions).
-  @param    to_delete Name of temporary files.
-  @param    ntmp Number of temporary files.
+  @param    gnucmd
+  @param    nplots
+  @param    pstyle
+  @param    term
+  @param    to_delete
+  @param    ntmp
 
   This structure holds all necessary information to talk to a gnuplot session.
   It is built and returned by gnuplot_init() and later used by all functions
   in this module to communicate with the session, then meant to be closed by 
   gnuplot_close().
-
-  This structure is meant to remain opaque to the developer, so that its
-  contents are not to be directly used.
- */
+*/
 
 typedef struct _GNUPLOT_CTRL_ {
-  FILE *gnucmd;
-  int nplots;
-  char pstyle[32];
-  char term[32];
-  char to_delete[GP_MAX_TMP_FILES][GP_TMP_NAME_SIZE];
-  int ntmp;
+  FILE *gnucmd;       /*!< Pipe to gnuplot process. */
+  int nplots;         /*!< Number of currently active plots. */
+  char pstyle[32];    /*!< Current plotting style. */
+  char term[32];      /*!< Save terminal name (used by `gnuplot_hardcopy()` function). */
+  char to_delete[GP_MAX_TMP_FILES][GP_TMP_NAME_SIZE];   /*!< Names of temporary files. */
+  int ntmp;           /*!< Number of temporary files in the current session. */
 } gnuplot_ctrl;
 
+/*-------------------------------------------------------------------------*/
 /**
   @typedef  gnuplot_point
-  @param    x X-coodinate (double).
-  @param    y Y-coodinate (double).
-  @param    z Z-coodinate (double).
   @brief    gnuplot point structure, ie set of [x,y,z] coordinates.
+  @param    x
+  @param    y
+  @param    z
 
   gnuplot_point is a point struct to allow the return of points to the
   `gnuplot_plot_obj_xy` function by callback functions.
 */
 
 typedef struct _GNUPLOT_POINT_ {
-  double x;
-  double y;
-  double z;
+  double x; /*!< X-coodinate */
+  double y; /*!< Y-coodinate */
+  double z; /*!< Z-coodinate */
 } gnuplot_point;
 
 /*---------------------------------------------------------------------------
@@ -93,10 +92,11 @@ char *gnuplot_get_program_path (char *pname);
 /* gnuplot interface handling functions */
 
 gnuplot_ctrl *gnuplot_init (void);
+void print_gnuplot_handle (gnuplot_ctrl *handle);
 void gnuplot_close (gnuplot_ctrl *handle);
 void gnuplot_cmd (gnuplot_ctrl *handle, char *cmd, ...);
 void gnuplot_setstyle (gnuplot_ctrl *handle, char *plot_style);
-void gnuplot_setterm (gnuplot_ctrl *handle, char *terminal);
+void gnuplot_setterm (gnuplot_ctrl *handle, char *terminal, int width, int height);
 void gnuplot_set_axislabel (gnuplot_ctrl *handle, char *label, char *axis);
 void gnuplot_resetplot (gnuplot_ctrl *handle);
 
