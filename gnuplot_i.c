@@ -70,7 +70,7 @@
 /**
   @brief    Create temporary output pipe with randomised name.
   @param    name Name of the pipe.
-  @return   int 
+  @return   int
  */
 /*-------------------------------------------------------------------------*/
 
@@ -183,9 +183,9 @@ gnuplot_ctrl *gnuplot_init (void) {
 #endif
 #endif
 #ifndef _WIN32
-  FAIL_IF (gnuplot_get_program_path("gnuplot") == NULL, "Cannot find gnuplot in your PATH");
+  FAIL_IF (gnuplot_get_program_path("gnuplot") == NULL, "Cannot find gnuplot in your PATH, check `which gnuplot`");
 #endif
-  FAIL_IF (gnuplot_get_program_path(GNUPLOT_EXEC) == NULL, "Cannot find gnuplot in your PATH");
+  FAIL_IF (gnuplot_get_program_path(GNUPLOT_EXEC) == NULL, "Cannot find gnuplot in your PATH, check `which gnuplot`");
 
   /* Structure initialization: */
   handle = (gnuplot_ctrl *)malloc(sizeof(gnuplot_ctrl));
@@ -198,19 +198,44 @@ gnuplot_ctrl *gnuplot_init (void) {
     FAIL_IF (0 == 0, "Error starting gnuplot");
   }
 
+  /* Set plot dimensions (should be handled elsewhere, but just to get things going) */
+  int width = 900;
+  int height = 400;
+
   /* Set terminal output type */
 #ifdef _WIN32
-  gnuplot_setterm(handle, "windows");
+  gnuplot_setterm(handle, "windows", width, height);
 #elif __APPLE__
-  /* Determine whether we should use aqua or x11 as our default */
+  /* Determine whether to use aqua or x11 as the default */
   if (getenv("DISPLAY") == NULL || (getenv("USE_AQUA") != NULL && strcmp(getenv("USE_AQUA"), "1") >= 0))
-    gnuplot_setterm(handle, "aqua");
+    gnuplot_setterm(handle, "aqua", width, height);
   else
-    gnuplot_setterm(handle, "x11");
+    gnuplot_setterm(handle, "x11", width, height);
 #else
-  gnuplot_setterm(handle, "x11");
+  /* The default is wxt, but this requires wxWidgets to be installed (need a test for that) */
+  gnuplot_setterm(handle, "wxt", width, height);
 #endif
   return handle;
+}
+
+/*-------------------------------------------------------------------------*/
+/**
+  @brief    Print contents of gnuplot control hande to screen.
+  @param    handle    Gnuplot session control handle
+
+  This is for debugging purposes only.
+
+ */
+/*--------------------------------------------------------------------------*/
+
+void print_gnuplot_handle (gnuplot_ctrl *handle) {
+  //fprintf(gnucmd);       /*!< Pipe to gnuplot process. */
+  printf("Temporary files: %d\n", handle->ntmp);    /*!< Number of temporary files in the current session. */
+  printf("Active plots: %d\n", handle->nplots);     /*!< Number of currently active plots. */
+  printf("Plotting style: %s\n", handle->pstyle);   /*!< Current plotting style. */
+  printf("Terminal name: %s\n", handle->term);      /*!< Save terminal name (used by `gnuplot_hardcopy()` function). */
+  //char to_delete[GP_MAX_TMP_FILES][GP_TMP_NAME_SIZE];   /*!< Names of temporary files. Only relevant for multiplots */
+  return;
 }
 
 /*-------------------------------------------------------------------------*/
@@ -308,7 +333,7 @@ void gnuplot_setstyle (gnuplot_ctrl *handle, char *plot_style) {
       strcmp(plot_style, "errorbars") &&
       strcmp(plot_style, "boxes") &&
       strcmp(plot_style, "boxerrorbars")) {
-    fprintf(stderr, "Warning: unknown requested style: using 'points'\n");
+    fprintf(stderr, "Warning: unknown requested plot style: using default 'points'\n");
     strcpy(handle->pstyle, "points");
   } else {
     strcpy(handle->pstyle, plot_style);
@@ -326,7 +351,7 @@ void gnuplot_setstyle (gnuplot_ctrl *handle, char *plot_style) {
   In gnuplot the terminal type is the output channel to which the plot should be
   displayed on.
 
-  The provided terminal is one of the following character strings:
+  The terminal type should be one of the following character strings:
   - `x11` for Linux, no anti-aliasing (default)
   - `wxt` or `qt` for Linux, with anti-aliasing
   - `aqua` for OSX
@@ -338,12 +363,14 @@ void gnuplot_setstyle (gnuplot_ctrl *handle, char *plot_style) {
  */
 /*--------------------------------------------------------------------------*/
 
-void gnuplot_setterm (gnuplot_ctrl *handle, char *terminal) {
+void gnuplot_setterm (gnuplot_ctrl *handle, char *terminal, int width, int height) {
   char cmd[64];
 
   strncpy(handle->term, terminal, 32);
   handle->term[31] = 0;
-  sprintf(cmd, "set terminal %s", handle->term);
+  FAIL_IF (width < 0 || height < 0, "Plot size dimensions cannot be negative");
+  sprintf(cmd, "set terminal %s size %d,%d", handle->term, width, height);
+  //printf("set terminal %s size %d,%d", handle->term, width, height);
   gnuplot_cmd(handle, cmd);
 }
 
@@ -356,6 +383,12 @@ void gnuplot_setterm (gnuplot_ctrl *handle, char *terminal) {
   @return   void
 
   Sets the axis label for a gnuplot session.
+
+  Example:
+
+  @code
+    gnuplot_set_axislabel(h, "Time(sec)", "x");
+  @endcode
  */
 /*--------------------------------------------------------------------------*/
 
@@ -733,7 +766,7 @@ void gnuplot_contour_plot (gnuplot_ctrl *handle, double *x, double *y, double *z
   @param    title     Title of the plot (can be NULL).
   @return   void
 
-  Calback:
+  Callback:
 
   void getPoint(void *object, gnuplot_point *point, int index, int pointCount);
     @param    obj     Pointer to an arbitrary object
@@ -878,8 +911,8 @@ void gnuplot_plot_obj_xy (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void
   or XY signal depending on a provided y, waits for a carriage return on stdin
   and closes the session.
 
-  An empty title, empty style, or empty labels for X and Y may be provided. 
-  Default valuess are provided in this case.
+  An empty title, empty style, or empty labels for X and Y may be provided.
+  Default values are provided in this case.
  */
 /*--------------------------------------------------------------------------*/
 
@@ -887,9 +920,9 @@ void gnuplot_plot_once (char *title, char *style, char *label_x, char *label_y, 
   /* Define handle as local variable to isolate it from other gnuplot sessions */
   gnuplot_ctrl *handle;
 
-  /* Some error trapping */
-  if (x == NULL || n < 1) return;
-  if ((handle = gnuplot_init()) == NULL) return;
+  /* Some error handling */
+  FAIL_IF (x == NULL || n < 1, "One of the parameters has been misspecified");
+  FAIL_IF ((handle = gnuplot_init()) == NULL, "Cannot initialize gnuplot handle");
 
   /* Generate commands to send to gnuplot */
   gnuplot_setstyle(handle, (style == NULL) ? "lines" : style);
@@ -966,12 +999,8 @@ void gnuplot_plot_slope (gnuplot_ctrl *handle, double a, double b, char *title) 
 
 void gnuplot_plot_equation (gnuplot_ctrl *handle, char *equation, char *title) {
   char cmd[GP_CMD_SIZE];
-  char plot_str[GP_EQ_SIZE];
-  char title_str[GP_TITLE_SIZE];
 
-  strcpy(plot_str, (handle->nplots > 0) ? "replot" : "plot");
-  strcpy(title_str, (title == NULL) ? "no title" : title);
-  sprintf(cmd, "%s %s title \"%s\" with %s", plot_str, equation, title_str, handle->pstyle);
+  sprintf(cmd, "%s %s title \"%s\" with %s", (handle->nplots > 0) ? "replot" : "plot", equation, (title) ? title : "No title", handle->pstyle);
   gnuplot_cmd(handle, cmd);
   handle->nplots++;
 }
