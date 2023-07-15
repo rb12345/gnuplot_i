@@ -20,7 +20,8 @@ int main(int argc, char *argv[]) {
 
   printf("*** Example of gnuplot control through C ***\n");
   h1 = gnuplot_init();
-  gnuplot_setterm(h1 , "wxt");
+  gnuplot_setterm(h1, "wxt", 900, 400);
+
   /** Slopes */
 
   gnuplot_setstyle(h1, "lines");
@@ -38,8 +39,7 @@ int main(int argc, char *argv[]) {
   /** Equations */
 
   gnuplot_resetplot(h1);
-  printf("\n\n");
-  printf("*** various equations\n");
+  printf("\n*** various equations\n");
   printf("y = sin(x)\n");
   gnuplot_plot_equation(h1, "sin(x)", "sine");
   sleep(SECONDS);
@@ -53,8 +53,7 @@ int main(int argc, char *argv[]) {
   /** Styles */
 
   gnuplot_resetplot(h1);
-  printf("\n\n");
-  printf("*** showing styles\n");
+  printf("\n*** showing styles\n");
   printf("sine in points\n");
   gnuplot_setstyle(h1, "points");
   gnuplot_plot_equation(h1, "sin(x)", "sine");
@@ -63,17 +62,18 @@ int main(int argc, char *argv[]) {
   gnuplot_setstyle(h1, "impulses");
   gnuplot_plot_equation(h1, "sin(x)", "sine");
   sleep(SECONDS);
-  printf("sine in steps\n");
+  printf("arctangens in steps\n");
   gnuplot_setstyle(h1, "steps");
-  gnuplot_plot_equation(h1, "sin(x)", "sine");
+  gnuplot_plot_equation(h1, "atan(x)", "arctangens");
   sleep(SECONDS);
 
   /** User defined 1d and 2d point sets */
 
   gnuplot_resetplot(h1);
   gnuplot_setstyle(h1, "impulses");
-  printf("\n\n");
-  printf("*** user-defined lists of doubles\n");
+  gnuplot_set_axislabel(h1, "X", "x");
+  gnuplot_set_axislabel(h1, "quadratic", "y");
+  printf("\n*** user-defined lists of doubles\n");
   for (i = 0; i < NPOINTS; i++) {
     x[i] = (double)i * i;
   }
@@ -91,8 +91,7 @@ int main(int argc, char *argv[]) {
 
   /** Multiple output screens */
 
-  printf("\n\n");
-  printf("*** multiple output windows\n");
+  printf("\n*** multiple output windows\n");
   gnuplot_resetplot(h1);
   gnuplot_setstyle(h1, "lines");
   h2 = gnuplot_init();
@@ -116,8 +115,7 @@ int main(int argc, char *argv[]) {
 
   /** Close gnuplot handles */
 
-  printf("\n\n");
-  printf("*** closing all gnuplot windows\n");
+  printf("\n*** closing all gnuplot windows\n");
   gnuplot_close(h1);
   gnuplot_close(h2);
   gnuplot_close(h3);
