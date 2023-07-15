@@ -2,7 +2,11 @@
  * Examples of gnuplot_i.c usage
  * Compilation: gcc -Wall -g animation.c gnuplot_i.c -o animation
  *
- * This program produces an animated sine wave in a gnuplot window
+ * This program produces an animated sine wave in a gnuplot window.
+ * It does so by reeatedly calling gnuplot_resetplot() and gnuplot_cmd()
+ * in a loop.
+ * The gnuplot window closes after all equation-plots have been generated.
+ *
  */
 
 #include <stdio.h>
