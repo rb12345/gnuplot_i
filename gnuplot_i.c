@@ -12,6 +12,16 @@
   gnuplot_i is a C interface library that enables sending display
   requests to gnuplot through C calls. gnuplot itself is an open source
   plotting library also written in C.
+
+  Example of a minimal structure:
+
+  @code
+    gnuplot_ctrl *handle = gnuplot_init();
+    gnuplot_cmd(handle, "set terminal png");
+    gnuplot_plot_equation(handle, "sin(x)", "Sine wave");
+    gnuplot_close(handle);
+  @endcode
+
 */
 /*--------------------------------------------------------------------------*/
 
@@ -273,8 +283,11 @@ void gnuplot_close (gnuplot_ctrl *handle) {
   @param    handle    Gnuplot session control handle
   @param    cmd       Command to send, same as a printf statement.
 
-  This sends a string to an active gnuplot session, to be executed.
-  There is no way to know if the command has been successfully executed or not.
+  This sends a string to an active gnuplot session to be executed.
+  This function is the fallback option: if a certain functionality is not
+  supported by one of the functions, it is in most cases possible to send
+  the required gnuplot commands using this function.
+
   The command syntax is the same as printf.
 
   Examples:
@@ -406,6 +419,9 @@ void gnuplot_set_axislabel (gnuplot_ctrl *handle, char *label, char *axis) {
   @return   void
 
   Resets a gnuplot session, i.e. the next plot will erase all previous ones.
+  This function can effectively be used to insert a new plot in the same 
+  window with all options maintained. As such, it can be used to create
+  animations.
  */
 /*--------------------------------------------------------------------------*/
 
@@ -936,40 +952,6 @@ void gnuplot_plot_once (char *title, char *style, char *label_x, char *label_y, 
   printf("Press Enter to continue\n");
   while (getchar() != '\n') {}
   gnuplot_close(handle);
-}
-
-/*-------------------------------------------------------------------------*/
-/**
-  @brief    Plot a slope (linear equation) on a gnuplot session.
-  @param    handle    Gnuplot session control handle.
-  @param    a         Slope.
-  @param    b         Intercept.
-  @param    title     Title of the plot (can be NULL).
-  @return   void
-
-  Plot a slope on a gnuplot session. The general form of the equation is y=ax+b,
-  where only the slope a and intercept b are provided.
-
-  Example:
-
-  @code
-    gnuplot_ctrl *h;
-    double a, b;
-
-    h = gnuplot_init();
-    gnuplot_plot_slope(h, 1.0, 0.0, "unity slope");
-    sleep(2);
-    gnuplot_close(h);
-  @endcode
- */
-/*--------------------------------------------------------------------------*/
-
-void gnuplot_plot_slope (gnuplot_ctrl *handle, double a, double b, char *title) {
-  char cmd[GP_CMD_SIZE];
-
-  sprintf(cmd, "%s %g * x + %g title \"%s\" with %s", (handle->nplots > 0) ? "replot" : "plot", a, b, (title) ? title : "No title", handle->pstyle);
-  gnuplot_cmd(handle, cmd);
-  handle->nplots++;
 }
 
 /*-------------------------------------------------------------------------*/
