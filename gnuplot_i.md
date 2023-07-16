@@ -128,8 +128,8 @@ The procedure to display graphics in a gnuplot session is as follows:
 See examples of `gnuplot_i` usage in the file 'example.c'.
 
 
-Some more points before you start using gnuplot_i
--------------------------------------------------
+Additional remarks
+------------------
 
 Note that it is possible to open several gnuplot sessions from the same program. Just be careful as to which session you are talking to when using functions. Example:
 
@@ -142,13 +142,13 @@ Note that it is possible to open several gnuplot sessions from the same program.
     gnuplot_close(h1);
     gnuplot_close(h2);
 
-Do not forget to close opened sessions. Not closing a session would pollute your system with temporary files. Normally your temporary directories should be cleaned automatically so every now and then, but best is to close all windows prior to closing the session.
+Do not forget to close an opened sessions. Not closing a session would pollute your system with temporary files. Normally your temporary directories should be cleaned automatically, for example after a restart, but closing all windows prior to closing the session is recommended.
 
-User interactions are not part of gnuplot_i. Feel free to use your own.
+User interactions are not part of `gnuplot_i`. It is however possible to rotate a 3D plot with the mouse for example.
 
 No timing mechanisms are provided to leave the outputs on screen until e.g. a key is pressed. I leave it up to gnuplot_i users to provide that kind of functionality in their own application, depending on the kind of interaction they need.
 
-gnuplot_i is completely free software. Use it for whatever you want to do with it without any fee, and do not hesitate to send feedback to me:
+gnuplot_i is completely free software. Use it for whatever you want without any fee, and do not hesitate to send feedback to me:
 
     <nDevil@eso.org>
 
@@ -156,7 +156,7 @@ If you can, I would appreciate a mention somewhere that you are using `gnuplot_i
 
     "This software uses the gnuplot_i library written by N.Devillard <nDevil@eso.org>."
 
-If you are using gnuplot_i for a web-based application, you can also add a link to the gnuplot home page:
+If you are using `gnuplot_i` for a web-based application, you can also add a link to the gnuplot_i home page:
 
     http://ndevilla.free.fr/
 
