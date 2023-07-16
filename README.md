@@ -81,4 +81,6 @@ Changelog
 Documentation
 -------------
 
+A tutorial is available in `gnuplot_i.md`.
+
 Documentation of macros, includes, functions and prototypes can be straightforwardly generated using [doxygen](https://www.doxygen.nl) and/or the [doxywizard](https://www.doxygen.nl/manual/doxywizard_usage.html).
