@@ -6,6 +6,20 @@ Overview
 
 The `gnuplot_i` interface library enables developers to create [gnuplots](http://www.gnuplot.info/) from their C programs.
 
+It works by creating a UNIX pipe through which gnuplot commands are sent and then executed. 
+
+The central data structure is the gnuplot control handle, which holds the gnuplot commands as well as technical internal information, such as terminal type, amount of open windows and such. 
+
+The plot is displayed in its own window or saved as an image file to disk.
+
+Example of a minimal structure:
+
+    gnuplot_ctrl *handle = gnuplot_init();
+    gnuplot_cmd(handle, "set terminal png");
+    gnuplot_plot_equation(handle, "sin(x)", "Sine wave");
+    gnuplot_close(handle);
+
+
 Provenance
 ----------
 
