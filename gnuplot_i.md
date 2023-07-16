@@ -8,6 +8,7 @@ gnuplot_i (formerly known as gnuplot_pipes) is a programmer-friendly set of C ro
 
 Gnuplot must be installed to use this library.
 
+
 Tutorial
 --------
 
@@ -23,7 +24,9 @@ The procedure to display graphics in a gnuplot session is as follows:
   The variable h will be used as the handle to the gnuplot session which was just opened, by all further functions.
 
 
-2. Send display configuration options. The following functions to set these options are available:
+2. Send display configuration options. 
+
+  The following functions to set these options are available:
 
     gnuplot_setterm (gnuplot_ctrl *handle, char *terminal, int width, int height)
 
@@ -66,7 +69,9 @@ The procedure to display graphics in a gnuplot session is as follows:
   With gnuplot_cmd() it should be easy to add up some more configuration related functions where needed.
 
 
-3. Send one of the following display functions:
+3. Send a display function.
+
+  The following display functions are available:
 
     void gnuplot_plot_x (gnuplot_ctrl *handle, double *x, int n, char *title);
 
@@ -114,6 +119,8 @@ The procedure to display graphics in a gnuplot session is as follows:
 
 
 4. Close the gnuplot handle, which also removes all temporary gnuplot files from `/tmp` and `/var/tmp`.
+
+  Syntax:
 
     gnuplot_close(h);
 
