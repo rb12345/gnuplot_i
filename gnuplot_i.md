@@ -13,7 +13,9 @@ Tutorial
 
 The procedure to display graphics in a gnuplot session is as follows:
 
-1. Open a new gnuplot session, referenced by a handle of type (pointer to) `gnuplot_ctrl`. This is done by calling `gnuplot_init()`:
+1. Open a new gnuplot session, referenced by a handle of type (pointer to) `gnuplot_ctrl`. This is done by calling `gnuplot_init()`.
+
+  Example:
 
     gnuplot_ctrl * h;
     h = gnuplot_init();
