@@ -1,19 +1,20 @@
 /*
  * Examples of gnuplot_i.c usage
- * Compilation: gcc -Wall -g example.c gnuplot_i.c -o example
+ * Compilation: gcc -Wall -g example.c gnuplot_i.c -o example -lm
  *
  */
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "gnuplot_i.h"
 
-#define SECONDS 1
+#define SECONDS 3
 #define NPOINTS 50
 
 int main(int argc, char *argv[]) {
   gnuplot_ctrl *h1, *h2, *h3, *h4;
-  double x[NPOINTS], y[NPOINTS];
+  double x[NPOINTS], y[NPOINTS], z[NPOINTS];
   int i;
 
   /** Initialize the gnuplot handle */
@@ -22,20 +23,6 @@ int main(int argc, char *argv[]) {
   h1 = gnuplot_init();
   gnuplot_setterm(h1, "wxt", 900, 400);
 
-  /** Slopes */
-
-  gnuplot_setstyle(h1, "lines");
-  printf("*** plotting slopes\n");
-  printf("y = x\n");
-  gnuplot_plot_slope(h1, 1.0, 0.0, "unity slope");
-  sleep(SECONDS);
-  printf("y = 2*x\n");
-  gnuplot_plot_slope(h1, 2.0, 0.0, "y=2x");
-  sleep(SECONDS);
-  printf("y = -x\n");
-  gnuplot_plot_slope(h1, -1.0, 0.0, "y=-x");
-  sleep(SECONDS);
-
   /** Equations */
 
   gnuplot_resetplot(h1);
@@ -43,8 +30,9 @@ int main(int argc, char *argv[]) {
   printf("y = sin(x)\n");
   gnuplot_plot_equation(h1, "sin(x)", "sine");
   sleep(SECONDS);
-  printf("y = log(x)\n");
-  gnuplot_plot_equation(h1, "log(x)", "logarithm");
+  printf("y = 2*x-1\n");
+  gnuplot_setstyle(h1, "dots");
+  gnuplot_plot_equation(h1, "2*x-1", "slope");
   sleep(SECONDS);
   printf("y = sin(x)*cos(2*x)\n");
   gnuplot_plot_equation(h1, "sin(x)*cos(2*x)", "sine product");
@@ -87,6 +75,22 @@ int main(int argc, char *argv[]) {
   gnuplot_resetplot(h1);
   gnuplot_setstyle(h1, "points");
   gnuplot_plot_xy(h1, x, y, NPOINTS, "user-defined points");
+  sleep(SECONDS);
+
+  /** Splot example */
+
+  gnuplot_resetplot(h1);
+  gnuplot_setstyle(h1, "lines");
+  gnuplot_set_axislabel(h1, "X", "x");
+  gnuplot_set_axislabel(h1, "Y", "y");
+  gnuplot_set_axislabel(h1, "Z-axis", "z");
+  for (int i = 0; i < NPOINTS; i++) {
+    x[i] = 2*sin((double)i/3);
+    y[i] = 5*sin((double)i/2 + 1);
+    z[i] = x[i] + y[i];
+  }
+  print_gnuplot_handle(h1);  // Showing internal debugging information
+  gnuplot_splot(h1, x, y, z, NPOINTS, "Lissajous");
   sleep(SECONDS);
 
   /** Multiple output screens */
