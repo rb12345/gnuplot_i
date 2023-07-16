@@ -9,7 +9,7 @@
 #include <math.h>
 #include "gnuplot_i.h"
 
-#define SECONDS 3
+#define SECONDS 2
 #define NPOINTS 50
 
 int main(int argc, char *argv[]) {
@@ -21,27 +21,34 @@ int main(int argc, char *argv[]) {
 
   printf("*** Example of gnuplot control through C ***\n");
   h1 = gnuplot_init();
-  gnuplot_setterm(h1, "wxt", 900, 400);
+
+  /** Dumb terminal: ASCII-plot, simplest usage of gnuplot_cmd function */
+
+  printf("\n*** dumb terminal\n");
+  gnuplot_setterm(h1, "dumb", 150, 40);
+  gnuplot_cmd(h1, "plot sin(x) w lines, cos(x) w lines");
 
   /** Equations */
 
-  gnuplot_resetplot(h1);
   printf("\n*** various equations\n");
+  gnuplot_setterm(h1, "wxt", 900, 400);
+  gnuplot_resetplot(h1);
   printf("y = sin(x)\n");
   gnuplot_plot_equation(h1, "sin(x)", "sine");
+  sleep(SECONDS);
+  printf("y = sin(x)*cos(2*x)\n");
+  gnuplot_setstyle(h1, "lines");
+  gnuplot_plot_equation(h1, "sin(x)*cos(2*x)", "sine product");
   sleep(SECONDS);
   printf("y = 2*x-1\n");
   gnuplot_setstyle(h1, "dots");
   gnuplot_plot_equation(h1, "2*x-1", "slope");
   sleep(SECONDS);
-  printf("y = sin(x)*cos(2*x)\n");
-  gnuplot_plot_equation(h1, "sin(x)*cos(2*x)", "sine product");
-  sleep(SECONDS);
 
   /** Styles */
 
-  gnuplot_resetplot(h1);
   printf("\n*** showing styles\n");
+  gnuplot_resetplot(h1);
   printf("sine in points\n");
   gnuplot_setstyle(h1, "points");
   gnuplot_plot_equation(h1, "sin(x)", "sine");
@@ -57,11 +64,11 @@ int main(int argc, char *argv[]) {
 
   /** User defined 1d and 2d point sets */
 
+  printf("\n*** user-defined lists of doubles\n");
   gnuplot_resetplot(h1);
   gnuplot_setstyle(h1, "impulses");
   gnuplot_set_axislabel(h1, "X", "x");
   gnuplot_set_axislabel(h1, "quadratic", "y");
-  printf("\n*** user-defined lists of doubles\n");
   for (i = 0; i < NPOINTS; i++) {
     x[i] = (double)i * i;
   }
@@ -79,6 +86,7 @@ int main(int argc, char *argv[]) {
 
   /** Splot example */
 
+  printf("\n*** parametric 3D plot\n");
   gnuplot_resetplot(h1);
   gnuplot_setstyle(h1, "lines");
   gnuplot_set_axislabel(h1, "X", "x");
@@ -91,6 +99,15 @@ int main(int argc, char *argv[]) {
   }
   print_gnuplot_handle(h1);  // Showing internal debugging information
   gnuplot_splot(h1, x, y, z, NPOINTS, "Lissajous");
+  sleep(SECONDS);
+
+  /** Scatter plot example, with data file */
+
+  printf("\n*** scatter plot\n");
+  gnuplot_resetplot(h1);
+  gnuplot_set_axislabel(h1, "avg(mRS)", "x");
+  gnuplot_set_axislabel(h1, "alpha", "y");
+  gnuplot_cmd(h1, "plot 'scatter.data' with points pointtype '🞄' linecolor 'blue'");
   sleep(SECONDS);
 
   /** Multiple output screens */
