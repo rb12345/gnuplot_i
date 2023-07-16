@@ -1,9 +1,15 @@
 gnuplot_i tutorial
 ==================
 
+Introduction
+------------
+
 gnuplot_i (formerly known as gnuplot_pipes) is a programmer-friendly set of C routines to use `gnuplot` as a data displayer from a C program.
 
 Gnuplot must be installed to use this library.
+
+Tutorial
+--------
 
 The procedure to display graphics in a gnuplot session is as follows:
 
@@ -17,11 +23,17 @@ The procedure to display graphics in a gnuplot session is as follows:
 
 2. Send display configuration options. The following functions to set these options are available:
 
+    gnuplot_setterm (gnuplot_ctrl *handle, char *terminal, int width, int height)
+
+  Sets the terminal type ('wxt', 'aqua', 'x11', 'png', 'windows') for the correct system-dependent display of the plot.
+
     gnuplot_setstyle (handle, style)
-        sets the plotting style of the next plots
+
+  Sets the plotting style of the next plots
 
     gnuplot_set_axislabel (handle, label, axis)
-        sets the label for the axis identified by variable `axis` (x, y or z)
+
+  Sets the label for the axis identified by variable `axis` (x, y or z)
 
   Examples:
 
@@ -52,7 +64,7 @@ The procedure to display graphics in a gnuplot session is as follows:
   With gnuplot_cmd() it should be easy to add up some more configuration related functions where needed.
 
 
-3. Send some display orders: either functions or doubles, or double points. The following functions are available:
+3. Send one of the following display functions:
 
     void gnuplot_plot_x (gnuplot_ctrl *handle, double *x, int n, char *title);
 
