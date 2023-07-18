@@ -13,6 +13,8 @@
   requests to gnuplot through C calls. gnuplot itself is an open source
   plotting library also written in C.
 
+  The plot is displayed in its own window or saved as an image file to disk.
+
   Example of a minimal structure:
 
   @code
@@ -234,17 +236,16 @@ gnuplot_ctrl *gnuplot_init (void) {
   @param    handle    Gnuplot session control handle
 
   This is for debugging purposes only.
-
  */
 /*--------------------------------------------------------------------------*/
 
 void print_gnuplot_handle (gnuplot_ctrl *handle) {
-  //fprintf(gnucmd);       /*!< Pipe to gnuplot process. */
-  printf("Temporary files: %d\n", handle->ntmp);    /*!< Number of temporary files in the current session. */
-  printf("Active plots: %d\n", handle->nplots);     /*!< Number of currently active plots. */
-  printf("Plotting style: %s\n", handle->pstyle);   /*!< Current plotting style. */
-  printf("Terminal name: %s\n", handle->term);      /*!< Save terminal name (used by `gnuplot_hardcopy()` function). */
-  //char to_delete[GP_MAX_TMP_FILES][GP_TMP_NAME_SIZE];   /*!< Names of temporary files. Only relevant for multiplots */
+  //fprintf(gnucmd);       /* Pipe to gnuplot process. */
+  printf("Temporary files: %d\n", handle->ntmp);    /* Number of temporary files in the current session. */
+  printf("Active plots: %d\n", handle->nplots);     /* Number of currently active plots. */
+  printf("Plotting style: %s\n", handle->pstyle);   /* Current plotting style. */
+  printf("Terminal name: %s\n", handle->term);      /* Save terminal name (used by `gnuplot_hardcopy()` function). */
+  //char to_delete[GP_MAX_TMP_FILES][GP_TMP_NAME_SIZE];   /* Names of temporary files. Only relevant for multiplots */
   return;
 }
 
@@ -400,12 +401,12 @@ void gnuplot_setterm (gnuplot_ctrl *handle, char *terminal, int width, int heigh
   Example:
 
   @code
-    gnuplot_set_axislabel(h, "Time(sec)", "x");
+    gnuplot_set_axislabel(h, "x", "Time(sec)");
   @endcode
  */
 /*--------------------------------------------------------------------------*/
 
-void gnuplot_set_axislabel (gnuplot_ctrl *handle, char *label, char *axis) {
+void gnuplot_set_axislabel (gnuplot_ctrl *handle, char *axis, char *label) {
   char cmd[GP_CMD_SIZE];
 
   sprintf(cmd, "set %slabel \"%s\"", axis, label);
@@ -573,10 +574,10 @@ void gnuplot_plot_xy (gnuplot_ctrl *handle, double *x, double *y, int n, char *t
   @param    title     Title of the plot (can be NULL).
   @return   void
 
-  Based on `gnuplot_plot_xy`, modifications by Robert Bradley 12/10/2004
-
   Plots a 3d graph from a list of points, passed as arrays x, y and z.
   All arrays are assumed to contain the same number of values.
+
+  Based on `gnuplot_plot_xy`, modifications by Robert Bradley 12/10/2004
 
   Example:
 
@@ -640,15 +641,15 @@ void gnuplot_splot (gnuplot_ctrl *handle, double *x, double *y, double *z, int n
   @param    title     Title of the plot (can be NULL).
   @return   void
 
+  Plots a 3d graph from a grid of points, passed in the form of an array [x,y].
+
+  Based on `gnuplot_splot`, modifications by Robert Bradley 2/4/2006
+
   Example:
 
   @code
     gnuplot_splot_grid(handle, (double*) points, rows, cols, title);
   @endcode
-
-  Based on `gnuplot_splot`, modifications by Robert Bradley 2/4/2006
-
-  Plots a 3d graph from a grid of points, passed in the form of an array [x,y].
  */
 /*--------------------------------------------------------------------------*/
 
@@ -701,9 +702,9 @@ void gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int col
   @param    title     Title of the plot (can be NULL).
   @return   void
 
-  Based on `gnuplot_splot`, modifications by Robert Bradley 23/11/2005
-
   Plots a contour plot from a list of points, passed as arrays x, y and z.
+
+  Based on `gnuplot_splot`, modifications by Robert Bradley 23/11/2005
 
   Example:
 
@@ -942,13 +943,9 @@ void gnuplot_plot_once (char *title, char *style, char *label_x, char *label_y, 
 
   /* Generate commands to send to gnuplot */
   gnuplot_setstyle(handle, (style == NULL) ? "lines" : style);
-  gnuplot_set_axislabel(handle, (label_x == NULL) ? "X" : label_x, "x");
-  gnuplot_set_axislabel(handle, (label_y == NULL) ? "Y" : label_y, "y");
-  if (y == NULL) {
-    gnuplot_plot_x(handle, x, n, title);
-  } else {
-    gnuplot_plot_xy(handle, x, y, n, title);
-  }
+  gnuplot_set_axislabel(handle, "x", (label_x == NULL) ? "X" : label_x);
+  gnuplot_set_axislabel(handle, "y", (label_y == NULL) ? "Y" : label_y);
+  (y == NULL) ? gnuplot_plot_x(handle, x, n, title) : gnuplot_plot_xy(handle, x, y, n, title);
   printf("Press Enter to continue\n");
   while (getchar() != '\n') {}
   gnuplot_close(handle);
@@ -962,7 +959,7 @@ void gnuplot_plot_once (char *title, char *style, char *label_x, char *label_y, 
   @param    title         Title of the plot (can be NULL).
   @return   void
 
-  Plots a curve of given equation. The general form of the equation is y=f(x),
+  Plots a given equation. The general form of the equation is y=f(x),
   by providing the f(x) side of the equation only.
 
   Example:
@@ -996,8 +993,8 @@ void gnuplot_plot_equation (gnuplot_ctrl *handle, char *equation, char *title) {
   @return   void
 
   Sets the terminal to Postscript, replots the graph and then resets the
-  terminal back to x11. The use of this function supposes that it will be used
-  in combination with one of the plotting functions, see example.
+  terminal back to x11. This function supposes that it will be used in
+  combination with one of the plotting functions, see example.
 
   Example:
 
