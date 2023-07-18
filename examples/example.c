@@ -2,6 +2,9 @@
  * Examples of gnuplot_i.c usage
  * Compilation: gcc -Wall -g example.c gnuplot_i.c -o example -lm
  *
+ * TODO
+ * - need a test for gnuplot_splot_grid(), gnuplot_contour_plot(), gnuplot_splot_obj(), gnuplot_plot_obj_xy(), gnuplot_plot_once()
+ *
  */
 
 #include <stdio.h>
@@ -22,11 +25,13 @@ int main(int argc, char *argv[]) {
   printf("*** Example of gnuplot control through C ***\n");
   h1 = gnuplot_init();
 
-  /** Dumb terminal: ASCII-plot, simplest usage of gnuplot_cmd function */
+  /** Dumb terminal: ASCII-plot */
+  /** Simplest usage of gnuplot_cmd function with fewest dependencies */
 
   printf("\n*** dumb terminal\n");
   gnuplot_setterm(h1, "dumb", 150, 40);
   gnuplot_cmd(h1, "plot sin(x) w lines, cos(x) w lines");
+  sleep(SECONDS);
 
   /** Equations */
 
@@ -34,15 +39,15 @@ int main(int argc, char *argv[]) {
   gnuplot_setterm(h1, "wxt", 900, 400);
   gnuplot_resetplot(h1);
   printf("y = sin(x)\n");
-  gnuplot_plot_equation(h1, "sin(x)", "sine");
+  gnuplot_plot_equation(h1, "sin(x)", "sine points");
   sleep(SECONDS);
   printf("y = sin(x)*cos(2*x)\n");
   gnuplot_setstyle(h1, "lines");
-  gnuplot_plot_equation(h1, "sin(x)*cos(2*x)", "sine product");
+  gnuplot_plot_equation(h1, "sin(x)*cos(2*x)", "sines lines");
   sleep(SECONDS);
   printf("y = 2*x-1\n");
   gnuplot_setstyle(h1, "dots");
-  gnuplot_plot_equation(h1, "2*x-1", "slope");
+  gnuplot_plot_equation(h1, "2*x-1", "slope dots");
   sleep(SECONDS);
 
   /** Styles */
@@ -50,16 +55,16 @@ int main(int argc, char *argv[]) {
   printf("\n*** showing styles\n");
   gnuplot_resetplot(h1);
   printf("sine in points\n");
-  gnuplot_setstyle(h1, "points");
-  gnuplot_plot_equation(h1, "sin(x)", "sine");
+  gnuplot_setstyle(h1, "linespoints");
+  gnuplot_plot_equation(h1, "sin(x)", "sine linespoints");
   sleep(SECONDS);
   printf("sine in impulses\n");
   gnuplot_setstyle(h1, "impulses");
-  gnuplot_plot_equation(h1, "sin(x)", "sine");
+  gnuplot_plot_equation(h1, "sin(x)", "sine impulses");
   sleep(SECONDS);
   printf("arctangens in steps\n");
   gnuplot_setstyle(h1, "steps");
-  gnuplot_plot_equation(h1, "atan(x)", "arctangens");
+  gnuplot_plot_equation(h1, "atan(x)", "arctangens steps");
   sleep(SECONDS);
 
   /** User defined 1d and 2d point sets */
@@ -67,8 +72,8 @@ int main(int argc, char *argv[]) {
   printf("\n*** user-defined lists of doubles\n");
   gnuplot_resetplot(h1);
   gnuplot_setstyle(h1, "impulses");
-  gnuplot_set_axislabel(h1, "X", "x");
-  gnuplot_set_axislabel(h1, "quadratic", "y");
+  gnuplot_set_axislabel(h1, "x", "X");
+  gnuplot_set_axislabel(h1, "y", "quadratic");
   for (i = 0; i < NPOINTS; i++) {
     x[i] = (double)i * i;
   }
@@ -89,9 +94,9 @@ int main(int argc, char *argv[]) {
   printf("\n*** parametric 3D plot\n");
   gnuplot_resetplot(h1);
   gnuplot_setstyle(h1, "lines");
-  gnuplot_set_axislabel(h1, "X", "x");
-  gnuplot_set_axislabel(h1, "Y", "y");
-  gnuplot_set_axislabel(h1, "Z-axis", "z");
+  gnuplot_set_axislabel(h1, "x", "X");
+  gnuplot_set_axislabel(h1, "y", "Y");
+  gnuplot_set_axislabel(h1, "z", "Z-axis");
   for (int i = 0; i < NPOINTS; i++) {
     x[i] = 2*sin((double)i/3);
     y[i] = 5*sin((double)i/2 + 1);
@@ -101,12 +106,12 @@ int main(int argc, char *argv[]) {
   gnuplot_splot(h1, x, y, z, NPOINTS, "Lissajous");
   sleep(SECONDS);
 
-  /** Scatter plot example, with data file */
+  /** Scatter plot: gnuplot example with data file */
 
   printf("\n*** scatter plot\n");
   gnuplot_resetplot(h1);
-  gnuplot_set_axislabel(h1, "avg(mRS)", "x");
-  gnuplot_set_axislabel(h1, "alpha", "y");
+  gnuplot_set_axislabel(h1, "x", "avg(mRS)");
+  gnuplot_set_axislabel(h1, "y", "alpha");
   gnuplot_cmd(h1, "plot 'scatter.data' with points pointtype '🞄' linecolor 'blue'");
   sleep(SECONDS);
 
