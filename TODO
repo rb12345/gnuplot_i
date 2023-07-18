@@ -7,4 +7,3 @@
   - How does it perform in high-volume or high-performance environments?
   - Are there limitations which need to be looked at, for example the maximum amount of open gnuplot files (GP_MAX_TMP_FILES)?
   - Does it still work if gnuplot is installed but qt or wxWidgets is not?
-* The file gnuplot_i.txt can probably be marked down.
