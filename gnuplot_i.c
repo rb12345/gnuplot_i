@@ -492,8 +492,6 @@ void gnuplot_plot_x (gnuplot_ctrl *handle, double *x, int n, char *title) {
 
   /* Command to be sent to gnuplot */
   sprintf(cmd, "%s \"%s\" title \"%s\" with %s", (handle->nplots > 0) ? "replot" : "plot", name, (title) ? title : "No title" , handle->pstyle);
-
-  /* Send command to gnuplot */
   gnuplot_cmd(handle, cmd);
   handle->nplots++;
 }
@@ -557,15 +555,13 @@ void gnuplot_plot_xy (gnuplot_ctrl *handle, double *x, double *y, int n, char *t
 
   /* Command to be sent to gnuplot */
   sprintf(cmd, "%s \"%s\" title \"%s\" with %s", (handle->nplots > 0) ? "replot" : "plot", name, (title) ? title : "No title" , handle->pstyle);
-
-  /* Send command to gnuplot */
   gnuplot_cmd(handle, cmd);
   handle->nplots++;
 }
 
 /*-------------------------------------------------------------------------*/
 /**
-  @brief    Plot a 3d graph from a list of points.
+  @brief    Plot a 3d graph (surface plot) from a list of points.
   @param    handle    Gnuplot session control handle.
   @param    x         Pointer to a list of x coordinates.
   @param    y         Pointer to a list of y coordinates.
@@ -625,8 +621,6 @@ void gnuplot_splot (gnuplot_ctrl *handle, double *x, double *y, double *z, int n
 
   /* Command to be sent to gnuplot */
   sprintf(cmd, "splot \"%s\" title \"%s\" with %s", name, (title) ? title : "No title", handle->pstyle);
-
-  /* Send command to gnuplot */
   gnuplot_cmd(handle, cmd);
   handle->nplots++;
 }
@@ -684,8 +678,6 @@ void gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int col
 
   /* Command to be sent to gnuplot */
   sprintf(cmd, "splot \"%s\" title \"%s\" with %s", name, (title) ? title : "No title", handle->pstyle);
-
-  /* Send command to gnuplot */
   gnuplot_cmd(handle, cmd);
   handle->nplots++;
 }
@@ -767,8 +759,6 @@ void gnuplot_contour_plot (gnuplot_ctrl *handle, double *x, double *y, double *z
 
   /* Command to be sent to gnuplot */
   sprintf(cmd, "splot \"%s\" title \"%s\" with %s", name, (title) ? title : "No title", handle->pstyle);
-
-  /* Send command to gnuplot */
   gnuplot_cmd(handle, cmd);
   handle->nplots++;
 }
@@ -823,8 +813,6 @@ void gnuplot_splot_obj (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *
 
   /* Command to be sent to gnuplot */
   sprintf(cmd, "splot \"%s\" title \"%s\" with %s", name, (title) ? title : "No title", handle->pstyle);
-
-  /* Send command to gnuplot */
   gnuplot_cmd(handle, cmd);
   handle->nplots++;
 }
@@ -906,8 +894,6 @@ void gnuplot_plot_obj_xy (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void
 
   /* Command to be sent to gnuplot */
   sprintf(cmd, "%s \"%s\" title \"%s\" with %s", (handle->nplots > 0) ? "replot" : "plot", name, (title) ? title : "No title", handle->pstyle);
-
-  /* Send command to gnuplot */
   gnuplot_cmd(handle, cmd);
   handle->nplots++;
 }
