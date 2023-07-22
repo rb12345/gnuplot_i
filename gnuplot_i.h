@@ -50,7 +50,7 @@
 
   This structure holds all necessary information to talk to a gnuplot session.
   It is built and returned by gnuplot_init() and later used by all functions
-  in this module to communicate with the session, then meant to be closed by 
+  in this module to communicate with the session, then meant to be closed by
   gnuplot_close().
 */
 
@@ -85,19 +85,19 @@ typedef struct _GNUPLOT_POINT_ {
   Function ANSI C prototypes
  ---------------------------------------------------------------------------*/
 
-/* Auxiliary function */
+/* Auxiliary functions */
 
 char *gnuplot_get_program_path (char *pname);
+void print_gnuplot_handle (gnuplot_ctrl *handle);
 
 /* gnuplot interface handling functions */
 
 gnuplot_ctrl *gnuplot_init (void);
-void print_gnuplot_handle (gnuplot_ctrl *handle);
 void gnuplot_close (gnuplot_ctrl *handle);
 void gnuplot_cmd (gnuplot_ctrl *handle, char *cmd, ...);
 void gnuplot_setstyle (gnuplot_ctrl *handle, char *plot_style);
 void gnuplot_setterm (gnuplot_ctrl *handle, char *terminal, int width, int height);
-void gnuplot_set_axislabel (gnuplot_ctrl *handle, char *label, char *axis);
+void gnuplot_set_axislabel (gnuplot_ctrl *handle, char *axis, char *label);
 void gnuplot_resetplot (gnuplot_ctrl *handle);
 
 /* gnplot plotting functions */
