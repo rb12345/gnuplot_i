@@ -15,7 +15,7 @@
 
   The plot is displayed in its own window or saved as an image file to disk.
 
-  Example of a minimal structure:
+  Example of a minimal program structure:
 
   @code
     gnuplot_ctrl *handle = gnuplot_init();
@@ -191,7 +191,7 @@ gnuplot_ctrl *gnuplot_init (void) {
   gnuplot_ctrl *handle;
 #ifndef _WIN32
 #ifndef __APPLE__
-  FAIL_IF (getenv("DISPLAY") == NULL, "Cannot find DISPLAY variable: has it been set?");
+  FAIL_IF (getenv("DISPLAY") == NULL, "Cannot find DISPLAY variable");
 #endif
 #endif
 #ifndef _WIN32
@@ -331,7 +331,7 @@ void gnuplot_cmd (gnuplot_ctrl *handle, char *cmd, ...) {
   - impulses
   - dots
   - steps
-  - errorbars (deprecated?)
+  - errorbars (superseded by xerrorbars and xyerrorbars since version 5.0)
   - boxes
   - boxerrorbars
  */
@@ -420,7 +420,7 @@ void gnuplot_set_axislabel (gnuplot_ctrl *handle, char *axis, char *label) {
   @return   void
 
   Resets a gnuplot session, i.e. the next plot will erase all previous ones.
-  This function can effectively be used to insert a new plot in the same 
+  This function can effectively be used to insert a new plot in the same
   window with all options maintained. As such, it can be used to create
   animations.
  */
@@ -627,7 +627,7 @@ void gnuplot_splot (gnuplot_ctrl *handle, double *x, double *y, double *z, int n
 
 /*-------------------------------------------------------------------------*/
 /**
-  @brief    Plot a 3d graph from a grid of points.
+  @brief    Plot a 3d graph (surface plot) from a grid of points.
   @param    handle    Gnuplot session control handle.
   @param    points    Pointer to a grid of points (rows,cols).
   @param    rows      Number of rows (y points).
@@ -956,7 +956,7 @@ void gnuplot_plot_once (char *title, char *style, char *label_x, char *label_y, 
 
     h = gnuplot_init();
     strcpy(eq, "sin(x) * cos(2*x)");
-    gnuplot_plot_equation(h, eq, "Sine wave", normal);
+    gnuplot_plot_equation(h, eq, "Oscillation", normal);
     gnuplot_close(h);
   @endcode
  */
@@ -990,7 +990,7 @@ void gnuplot_plot_equation (gnuplot_ctrl *handle, char *equation, char *title) {
 
     h = gnuplot_init();
     strcpy(eq, "sin(x) * cos(2*x)");
-    gnuplot_plot_equation(h, eq, "Sine wave", normal);
+    gnuplot_plot_equation(h, eq, "Oscillation", normal);
     gnuplot_hardcopy(h, "sinewave.ps", "color");
     gnuplot_close(h);
   @endcode
