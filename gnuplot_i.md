@@ -34,7 +34,7 @@ The procedure to display graphics in a gnuplot session is as follows:
 
     gnuplot_setstyle (handle, style)
 
-  Sets the plotting style of the next plots.
+  Sets the plotting style of the next plots, such as 'lines', 'dots', 'linespoints' etc.
 
     gnuplot_set_axislabel (handle, axis, label)
 
@@ -126,7 +126,7 @@ The procedure to display graphics in a gnuplot session is as follows:
     gnuplot_close(h);
 
 
-See examples of `gnuplot_i` usage in the file 'example.c'.
+See examples of `gnuplot_i` usage in the directory `examples`.
 
 
 Additional remarks
@@ -147,7 +147,7 @@ Do not forget to close an opened session. Not closing a session pollutes your sy
 
 User interactions are not part of `gnuplot_i`. It is however possible to resize the window or rotate a 3D plot with the mouse for example, as supported by gnuplot.
 
-No timing mechanisms are provided to leave the outputs on screen until e.g. a key is pressed. It is up to gnuplot_i users to provide such functionality in their own application, depending on the kind of interaction they need.
+No timing mechanisms are provided to leave the outputs on screen until e.g. a key is pressed. It is up to developers to provide such functionality in their application, depending on the kind of interaction they need.
 
 gnuplot_i is completely free software. Use it for whatever you want without any fee, and do not hesitate to send feedback to me:
 
@@ -157,7 +157,7 @@ If you can, I would appreciate a mention somewhere that you are using `gnuplot_i
 
     This software uses the gnuplot_i library written by N.Devillard <nDevil@eso.org>.
 
-If you are using `gnuplot_i` for a web-based application, you can also add a link to the gnuplot_i home page:
+If you are using `gnuplot_i` in a web-based application, you can also add a link to the gnuplot_i home page:
 
     http://ndevilla.free.fr/
 
