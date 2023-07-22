@@ -6,16 +6,18 @@ Overview
 
 The `gnuplot_i` interface library enables developers to create [gnuplots](http://www.gnuplot.info/) from their C programs.
 
-It works by creating a UNIX pipe through which gnuplot commands are sent and then executed. 
+The program works by creating a UNIX pipe through which gnuplot commands are sent and then executed. 
 
 The central data structure is the gnuplot control handle, which holds the gnuplot commands as well as technical internal information, such as terminal type, amount of open windows and such. 
 
-The plot is displayed in its own window or saved as an image file to disk.
+The plot can be displayed in its own window or otherwise saved as an image file to disk.
 
-Example of a minimal structure:
+Example of a minimal program structure:
+
+    #include "gnuplot_i.h"
 
     gnuplot_ctrl *handle = gnuplot_init();
-    gnuplot_cmd(handle, "set terminal png");
+    gnuplot_setterm(handle, "wxt", 600, 400);
     gnuplot_plot_equation(handle, "sin(x)", "Sine wave");
     gnuplot_close(handle);
 
@@ -23,7 +25,7 @@ Example of a minimal structure:
 Provenance
 ----------
 
-It was originally developed by Nicolas Devillard (2000) who also placed it in the public domain. 
+This program was originally developed by Nicolas Devillard (2000) who also placed it in the public domain. 
 Other authors have contributed to this library:
 * Peter Maresh (2010): compile and run on MS-Windows 7/64 using mingw64.
 * Robert Bradley (2004-2006): functional enhancements, see next section.
@@ -43,7 +45,7 @@ This interface library features the following enhancements:
 * Plotting of complex structures through the use of callbacks, see `gnuplot_plot_obj_xy` and `gnuplot_splot_obj`.
 * Contour plotting with `gnuplot_setstyle(handle, "lines")` and `gnuplot_contour_plot(handle, x, y, z, nx, ny, "title")`.
 
-If you have any questions or comments, these can be sent to robert.bradley@merton.oxon.org, or via my website (http://www.robert-bradley.co.uk).
+If you have any questions or comments, these can be sent to robert.bradley@merton.oxon.org, or via the [website](http://www.robert-bradley.co.uk).
 
 
 Examples
