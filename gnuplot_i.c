@@ -13,7 +13,8 @@
   requests to gnuplot through C calls. gnuplot itself is an open source
   plotting library also written in C.
 
-  The plot is displayed in its own window or saved as an image file to disk.
+  The plot can be displayed in its own window or otherwise saved as an image file
+  to disk.
 
   Example of a minimal program structure:
 
@@ -92,7 +93,7 @@ int mkstemp (char *name) {
   char *start = strstr(name, "XXXXXX");
 
   for (i = 0; i < 6; i++) {
-    start[i] = (char) (48 + ((int) rand() * 10 / 32768.0));  // 16-bits solution only?
+    start[i] = (char) (48 + ((int) rand() * 10 / 32768.0));
   }
   i = open(name, O_RDWR | O_CREAT);
   if (i != -1) {
@@ -176,7 +177,7 @@ char *gnuplot_get_program_path (char *pname) {
 
 /*-------------------------------------------------------------------------*/
 /**
-  @brief     Opens a gnuplot session, ready to receive commands.
+  @brief     Open a gnuplot session, ready to receive commands.
   @return    Newly allocated gnuplot control structure.
 
   This opens a new gnuplot session, ready for input.
@@ -232,7 +233,7 @@ gnuplot_ctrl *gnuplot_init (void) {
 
 /*-------------------------------------------------------------------------*/
 /**
-  @brief    Print contents of gnuplot control hande to screen.
+  @brief    Print contents of gnuplot control handle to screen.
   @param    handle    Gnuplot session control handle
 
   This is for debugging purposes only.
@@ -240,18 +241,18 @@ gnuplot_ctrl *gnuplot_init (void) {
 /*--------------------------------------------------------------------------*/
 
 void print_gnuplot_handle (gnuplot_ctrl *handle) {
-  //fprintf(gnucmd);       /* Pipe to gnuplot process. */
+  //fprintf(gnucmd);   /* Pipe to gnuplot process. For debugging purposes only. */
   printf("Temporary files: %d\n", handle->ntmp);    /* Number of temporary files in the current session. */
   printf("Active plots: %d\n", handle->nplots);     /* Number of currently active plots. */
   printf("Plotting style: %s\n", handle->pstyle);   /* Current plotting style. */
   printf("Terminal name: %s\n", handle->term);      /* Save terminal name (used by `gnuplot_hardcopy()` function). */
-  //char to_delete[GP_MAX_TMP_FILES][GP_TMP_NAME_SIZE];   /* Names of temporary files. Only relevant for multiplots */
+  //char to_delete[GP_MAX_TMP_FILES][GP_TMP_NAME_SIZE];   /* Names of temporary files. Only relevant for multiplots. */
   return;
 }
 
 /*-------------------------------------------------------------------------*/
 /**
-  @brief    Closes a gnuplot session previously opened by gnuplot_init()
+  @brief    Close a gnuplot session previously opened by gnuplot_init()
   @param    handle    Gnuplot session control handle.
   @return   void
 
@@ -280,7 +281,7 @@ void gnuplot_close (gnuplot_ctrl *handle) {
 
 /*-------------------------------------------------------------------------*/
 /**
-  @brief    Sends a command to an active gnuplot session.
+  @brief    Send a command to an active gnuplot session.
   @param    handle    Gnuplot session control handle
   @param    cmd       Command to send, same as a printf statement.
 
@@ -390,7 +391,7 @@ void gnuplot_setterm (gnuplot_ctrl *handle, char *terminal, int width, int heigh
 
 /*-------------------------------------------------------------------------*/
 /**
-  @brief    Sets the axis label of a gnuplot session.
+  @brief    Set the axis label of a gnuplot session.
   @param    handle  Gnuplot session control handle.
   @param    label   Character string to use for axis label.
   @param    axis    Character string to identify axis, ie "x", "y" or "z".
@@ -415,7 +416,7 @@ void gnuplot_set_axislabel (gnuplot_ctrl *handle, char *axis, char *label) {
 
 /*-------------------------------------------------------------------------*/
 /**
-  @brief    Resets a gnuplot session (next plot will erase previous ones).
+  @brief    Reset a gnuplot session (next plot will erase previous ones).
   @param    handle Gnuplot session control handle.
   @return   void
 
@@ -438,7 +439,7 @@ void gnuplot_resetplot (gnuplot_ctrl *handle) {
 
 /*-------------------------------------------------------------------------*/
 /**
-  @brief    Plots a 2d graph from a list of doubles.
+  @brief    Plot a 2d graph from a list of doubles.
   @param    handle    Gnuplot session control handle.
   @param    x         Array of doubles.
   @param    n         Number of values in the passed array.
