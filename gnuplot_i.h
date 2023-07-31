@@ -49,7 +49,7 @@
   @param    ntmp
 
   This structure holds all necessary information to talk to a gnuplot session.
-  It is built and returned by gnuplot_init() and later used by all functions
+  It is called and returned by gnuplot_init() and later used by all functions
   in this module to communicate with the session, then meant to be closed by
   gnuplot_close().
 */
@@ -58,7 +58,7 @@ typedef struct _GNUPLOT_CTRL_ {
   FILE *gnucmd;       /*!< Pipe to gnuplot process. */
   int nplots;         /*!< Number of currently active plots. */
   char pstyle[32];    /*!< Current plotting style. */
-  char term[32];      /*!< Save terminal name (used by `gnuplot_hardcopy()` function). */
+  char term[32];      /*!< Save terminal name, used by `gnuplot_hardcopy()` function. */
   char to_delete[GP_MAX_TMP_FILES][GP_TMP_NAME_SIZE];   /*!< Names of temporary files. */
   int ntmp;           /*!< Number of temporary files in the current session. */
 } gnuplot_ctrl;
@@ -76,9 +76,9 @@ typedef struct _GNUPLOT_CTRL_ {
 */
 
 typedef struct _GNUPLOT_POINT_ {
-  double x; /*!< X-coodinate */
-  double y; /*!< Y-coodinate */
-  double z; /*!< Z-coodinate */
+  double x; /*!< X-coordinate */
+  double y; /*!< Y-coordinate */
+  double z; /*!< Z-coordinate */
 } gnuplot_point;
 
 /*---------------------------------------------------------------------------
@@ -90,7 +90,7 @@ typedef struct _GNUPLOT_POINT_ {
 char *gnuplot_get_program_path (char *pname);
 void print_gnuplot_handle (gnuplot_ctrl *handle);
 
-/* gnuplot interface handling functions */
+/* Gnuplot interface handling functions */
 
 gnuplot_ctrl *gnuplot_init (void);
 void gnuplot_close (gnuplot_ctrl *handle);
@@ -100,7 +100,7 @@ void gnuplot_setterm (gnuplot_ctrl *handle, char *terminal, int width, int heigh
 void gnuplot_set_axislabel (gnuplot_ctrl *handle, char *axis, char *label);
 void gnuplot_resetplot (gnuplot_ctrl *handle);
 
-/* gnplot plotting functions */
+/* Gnplot plotting functions */
 
 void gnuplot_plot_x (gnuplot_ctrl *handle, double *x, int n, char *title);
 void gnuplot_plot_xy (gnuplot_ctrl *handle, double *x, double *y, int n, char *title);
