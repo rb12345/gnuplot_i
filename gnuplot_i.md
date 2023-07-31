@@ -4,7 +4,7 @@ gnuplot_i tutorial
 Introduction
 ------------
 
-gnuplot_i (formerly known as `gnuplot_pipes`) is a programmer-friendly set of C routines to use `gnuplot` as a data displayer from a C program.
+gnuplot_i (formerly known as `gnuplot_pipes`) is a programmer-friendly set of C routines to use `gnuplot` to display plots directly from a C program.
 
 Gnuplot must be installed to use this library.
 
@@ -30,11 +30,11 @@ The procedure to display graphics in a gnuplot session is as follows:
 
     gnuplot_setterm (gnuplot_ctrl *handle, char *terminal, int width, int height)
 
-  Sets the terminal type ('wxt', 'aqua', 'x11', 'png', 'windows') for the correct system-dependent display of the plot.
+  Sets the terminal type for the correct system-dependent display of the plot, such as 'wxt', 'aqua', 'x11', 'png', 'windows'.
 
     gnuplot_setstyle (handle, style)
 
-  Sets the plotting style of the next plots, such as 'lines', 'dots', 'linespoints' etc.
+  Sets the plotting style of the next plots, such as 'lines', 'dots', 'linespoints'.
 
     gnuplot_set_axislabel (handle, axis, label)
 
@@ -47,7 +47,7 @@ The procedure to display graphics in a gnuplot session is as follows:
     gnuplot_set_axislabel (h, 'x', "Time(secs)");
     gnuplot_set_axislabel (h, 'y', "Value");
 
-  The critical routine is `gnuplot_cmd()`, which sends character strings to gnuplot as though they were typed in by a user. This routine works in a printf fashion, accepting the same kind of format string and variable number of arguments.
+  The critical routine is `gnuplot_cmd()`, which sends character strings to gnuplot as though they were commands typed in by a user. This routine works in a printf fashion, accepting the same kind of format string and variable number of arguments.
 
   The prototype is:
 
@@ -76,15 +76,15 @@ The procedure to display graphics in a gnuplot session is as follows:
 
     void gnuplot_plot_x (gnuplot_ctrl *handle, double *x, int n, char *title)
 
-  Plots a 2d graph from a list of doubles. The x-coordinate is the index of the double in the list, the y coordinate is the double in the list.
+  Plots a 2d graph from a list of doubles. The x-coordinate is the index of the double in the list, the y coordinate is the value in the list.
 
     void gnuplot_plot_xy (gnuplot_ctrl *handle, double *x, double *y, int n, char *title)
 
-  Plots a 2d graph from a list of points. Provide points through a list of x and a list of y coordinates. Both arrays are assumed to contain the same number of values.
+  Plots a 2d graph from a list of points. Provide points through a list of x and a list of y coordinates. Both arrays are assumed to have the same length.
 
     void gnuplot_splot (gnuplot_ctrl *handle, double *x, double *y, double *z, int n, char *title)
 
-  Plots a 3d graph from a list of points, passed as arrays x, y and z. All arrays are assumed to contain the same number of values.
+  Plots a 3d graph from a list of points, passed as arrays x, y and z. All arrays are assumed to have the same length.
 
     void gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int cols, char *title)
 
@@ -100,7 +100,7 @@ The procedure to display graphics in a gnuplot session is as follows:
 
     void gnuplot_plot_obj_xy (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *, gnuplot_point *, int, int), int n, char *title)
 
-  Plots a 2d graph using a callback function to return points.
+  Plots a 2d graph using a callback function to return the points.
 
     void gnuplot_plot_once (char *title, char *style, char *label_x, char *label_y, double *x, double *y, int n)
 
@@ -112,7 +112,7 @@ The procedure to display graphics in a gnuplot session is as follows:
 
     void gnuplot_hardcopy (gnuplot_ctrl *handle, char *filename, char *color)
 
-  Sets the terminal to Postscript, replots the graph and then resets the terminal back to x11. The use of this function supposes that it will be used in combination with one of the plotting functions.
+  Sets the terminal to Postscript, replots the graph and then resets the terminal back to its original setting. The use of this function supposes that it will be used in combination with one of the plotting functions.
 
     gnuplot_resetplot (gnuplot_ctrl *handle)
 
@@ -147,7 +147,7 @@ Do not forget to close an opened session. Not closing a session pollutes your sy
 
 User interactions are not part of `gnuplot_i`. It is however possible to resize the window or rotate a 3D plot with the mouse for example, as supported by gnuplot.
 
-No timing mechanisms are provided to leave the outputs on screen until e.g. a key is pressed. It is up to developers to provide such functionality in their application, depending on the kind of interaction they need.
+No timing mechanisms are provided to leave the outputs on screen until for example a key is pressed. It is up to developers to provide such functionality in their application, depending on the kind of interaction the users need.
 
 gnuplot_i is completely free software. Use it for whatever you want without any fee, and do not hesitate to send feedback to me:
 
