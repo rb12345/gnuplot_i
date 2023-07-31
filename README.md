@@ -4,7 +4,7 @@ gnuplot C interface library
 Overview
 --------
 
-The `gnuplot_i` interface library enables developers to create [gnuplots](http://www.gnuplot.info/) from their C programs.
+The `gnuplot_i` interface library enables developers to create [gnuplots](http://www.gnuplot.info/) directly from their C programs.
 
 The program works by creating a UNIX pipe through which gnuplot commands are sent and then executed. 
 
@@ -85,4 +85,4 @@ Documentation
 
 A tutorial is available in `gnuplot_i.md`.
 
-Documentation of macros, includes, functions and prototypes can be straightforwardly generated using [doxygen](https://www.doxygen.nl) and/or the [doxywizard](https://www.doxygen.nl/manual/doxywizard_usage.html).
+Documentation of macros, includes, functions and prototypes can be straightforwardly generated using [doxygen](https://www.doxygen.nl) and/or the [doxywizard](https://www.doxygen.nl/manual/doxywizard_usage.html). A Doxyfile is provided for this purpose.
