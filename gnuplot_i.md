@@ -18,7 +18,7 @@ Tutorial
 
 The procedure to display graphics in a gnuplot session is then as follows:
 
-1. Open a new gnuplot session
+### Open a new gnuplot session
 
   A gnuplot session is referenced by a handle of type (pointer to) `gnuplot_ctrl`. This is done by calling `gnuplot_init()`.
 
@@ -30,7 +30,7 @@ The procedure to display graphics in a gnuplot session is then as follows:
   The variable h will be used as the handle to the gnuplot session which was just opened, by all further functions.
 
 
-2. Send display configuration options. 
+### Send display configuration options. 
 
   Gnuplot configuration options are settings such as terminal type, plotting style and labels.
   The following functions to set these options are available:
@@ -77,7 +77,7 @@ The procedure to display graphics in a gnuplot session is then as follows:
   With `gnuplot_cmd()` additional configuration related functions can be set up where needed.
 
 
-3. Send a display function.
+### Send a display function.
 
   The following display functions are available:
 
@@ -126,7 +126,7 @@ The procedure to display graphics in a gnuplot session is then as follows:
   Clears the current gnuplot display before the next plot is inserted into the same gnuplot window.
 
 
-4. Close the gnuplot handle, which also removes all temporary gnuplot files from `/tmp` and `/var/tmp`.
+### Close the gnuplot handle, which also removes all temporary gnuplot files from `/tmp` and `/var/tmp`.
 
   Syntax:
 
