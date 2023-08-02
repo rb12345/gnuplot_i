@@ -4,17 +4,23 @@ gnuplot_i tutorial
 Introduction
 ------------
 
-gnuplot_i (formerly known as `gnuplot_pipes`) is a programmer-friendly set of C routines to use `gnuplot` to display plots directly from a C program.
+The C interface library `gnuplot_i` (formerly known as `gnuplot_pipes`) is a programmer-friendly set of C routines to use the plotting program `gnuplot` to display plots directly from a C program.
 
 Gnuplot must be installed to use this library.
+
+This library must be included as follows from the C program:
+
+    #include "gnuplot_i.h"
 
 
 Tutorial
 --------
 
-The procedure to display graphics in a gnuplot session is as follows:
+The procedure to display graphics in a gnuplot session is then as follows:
 
-1. Open a new gnuplot session, referenced by a handle of type (pointer to) `gnuplot_ctrl`. This is done by calling `gnuplot_init()`.
+1. Open a new gnuplot session
+
+  A gnuplot session is referenced by a handle of type (pointer to) `gnuplot_ctrl`. This is done by calling `gnuplot_init()`.
 
   Example:
 
@@ -26,6 +32,7 @@ The procedure to display graphics in a gnuplot session is as follows:
 
 2. Send display configuration options. 
 
+  Gnuplot configuration options are settings such as terminal type, plotting style and labels.
   The following functions to set these options are available:
 
     gnuplot_setterm (gnuplot_ctrl *handle, char *terminal, int width, int height)
