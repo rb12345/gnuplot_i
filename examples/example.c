@@ -3,7 +3,7 @@
  * Compilation: gcc -Wall -g example.c gnuplot_i.c -o example -lm
  *
  * TODO
- * - need a test for gnuplot_splot_grid(), gnuplot_contour_plot(), gnuplot_splot_obj(), gnuplot_plot_obj_xy(), gnuplot_plot_once()
+ * - need a test for gnuplot_splot_grid(), gnuplot_splot_obj(), gnuplot_plot_obj_xy(), gnuplot_plot_once()
  *
  */
 
@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
 
   /** Initialize the gnuplot handle */
 
-  printf("*** Example of gnuplot control through C ***\n");
+  printf("*** Examples of gnuplot control through C ***\n");
   h1 = gnuplot_init();
 
   /** Dumb terminal: ASCII-plot */
@@ -52,9 +52,9 @@ int main(int argc, char *argv[]) {
 
   /** Styles */
 
-  printf("\n*** showing styles\n");
+  printf("\n*** various styles\n");
   gnuplot_resetplot(h1);
-  printf("sine in points\n");
+  printf("sine in linespoints\n");
   gnuplot_setstyle(h1, "linespoints");
   gnuplot_plot_equation(h1, "sin(x)", "sine linespoints");
   sleep(SECONDS);
@@ -79,17 +79,17 @@ int main(int argc, char *argv[]) {
   }
   gnuplot_plot_x(h1, x, NPOINTS, "user-defined doubles");
   sleep(SECONDS);
-  printf("*** user-defined lists of points\n");
+  printf("\n*** user-defined lists of points\n");
   for (i = 0; i < NPOINTS; i++) {
     x[i] = (double)i;
-    y[i] = (double)i * (double)i;
+    y[i] = sqrt(i);
   }
   gnuplot_resetplot(h1);
   gnuplot_setstyle(h1, "points");
   gnuplot_plot_xy(h1, x, y, NPOINTS, "user-defined points");
   sleep(SECONDS);
 
-  /** Splot example */
+  /** Splot (surface plot) example */
 
   printf("\n*** parametric 3D plot\n");
   gnuplot_resetplot(h1);
@@ -102,17 +102,35 @@ int main(int argc, char *argv[]) {
     y[i] = 5*sin((double)i/2 + 1);
     z[i] = x[i] + y[i];
   }
-  print_gnuplot_handle(h1);  // Showing internal debugging information
+  printf("Internal debugging information:\n");
+  print_gnuplot_handle(h1);
   gnuplot_splot(h1, x, y, z, NPOINTS, "Lissajous");
+  sleep(SECONDS);
+
+  /** Contour plot example */
+
+  printf("\n*** contour plot\n");
+  gnuplot_resetplot(h1);
+  int count = 100;
+  double xx[count*count], yy[count*count], zz[count*count];
+  for (int i = 0; i < count; i++) {
+    for (int j = 0; j < count; j++) {
+      xx[count*i+j] = i;
+      yy[count*i+j] = j;
+      zz[count*i+j] = 1000*sqrt(pow(i-count/2, 2)+pow(j-count/2, 2));
+    }
+  }
+  gnuplot_setstyle(h1, "lines");
+  gnuplot_contour_plot(h1, xx, yy, zz, count, count, "Points");
   sleep(SECONDS);
 
   /** Scatter plot: gnuplot example with data file */
 
-  printf("\n*** scatter plot\n");
+  printf("\n*** scatter plot: data file\n");
   gnuplot_resetplot(h1);
   gnuplot_set_axislabel(h1, "x", "avg(mRS)");
   gnuplot_set_axislabel(h1, "y", "alpha");
-  gnuplot_cmd(h1, "plot 'scatter.data' with points pointtype '🞄' linecolor 'blue'");
+  gnuplot_cmd(h1, "plot 'scatter.data' with points pointtype '•' linecolor 'blue'");
   sleep(SECONDS);
 
   /** Multiple output screens */
