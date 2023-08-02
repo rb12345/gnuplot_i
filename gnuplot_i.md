@@ -50,7 +50,7 @@ The procedure to display graphics in gnuplot is then as follows:
 
   Examples:
 
-    gnuplot_setterm(h, "wxt", 600, 400);
+    gnuplot_setterm (h, "wxt", 600, 400);
     gnuplot_setstyle (h, "impulses");
     gnuplot_set_axislabel (h, 'x', "Time(secs)");
     gnuplot_set_axislabel (h, 'y', "Value");
@@ -59,21 +59,21 @@ The procedure to display graphics in gnuplot is then as follows:
 
   The prototype is:
 
-    gnuplot_cmd(handle, command, ...)
+    gnuplot_cmd (handle, command, ...)
 
   Example:
 
     char myfile[] = "/data/file_in.dat";
     
-    gnuplot_cmd(handle, "plot '%s'", myfile);
+    gnuplot_cmd (handle, "plot '%s'", myfile);
     for (int i = 0; i < 10; i++) {
         gnuplot_cmd (handle, "plot y=%d*x", i);
     }
 
   The following commands request the output to be saved as a Postscript file named 'curve.ps':
 
-    gnuplot_cmd(h, "set terminal postscript");
-    gnuplot_cmd(h, "set output \"curve.ps\"");
+    gnuplot_cmd (h, "set terminal postscript");
+    gnuplot_cmd (h, "set output \"curve.ps\"");
 
   With `gnuplot_cmd()` additional configuration related functions can be set up where needed.
 
@@ -129,7 +129,7 @@ The procedure to display graphics in gnuplot is then as follows:
 
 ### Close the gnuplot handle
 
-  Closing a gnuplot handle removes all temporary gnuplot files from `/tmp` and `/var/tmp`.
+  Closing a gnuplot handle removes all temporary gnuplot files from `/tmp` and `/var/tmp` as well as frees up memory taken up by the gnuplot_ctrl handle.
 
   Syntax:
 
@@ -147,17 +147,17 @@ Note that it is possible to open several gnuplot sessions from the same program.
     h1 = gnuplot_init();
     h2 = gnuplot_init();
 
-    gnuplot_plot_equation(h1, "sin(x)", "sine on first session");
-    gnuplot_plot_equation(h2, "log(x)", "log on second session");
+    gnuplot_plot_equation (h1, "sin(x)", "sine on first session");
+    gnuplot_plot_equation (h2, "log(x)", "log on second session");
     sleep(3);
     gnuplot_close(h1);
     gnuplot_close(h2);
 
 Do not forget to close an opened session. Not closing a session pollutes your system with temporary files. Normally your temporary directories should be cleaned automatically, for example after a restart, but closing all windows prior to closing the session is recommended.
 
-User interactions are not part of `gnuplot_i`. It is however possible to resize the window or rotate a 3D plot with the mouse for example, as supported by gnuplot.
+User interactions are not part of `gnuplot_i`. It is however possible to resize the window or rotate a 3D plot with the mouse for example, as supported by gnuplot itself.
 
-No timing mechanisms are provided to leave the outputs on screen until for example a key is pressed. It is up to developers to provide such functionality in their application, depending on the kind of interaction the users need.
+No timing mechanisms are provided to leave the outputs on screen until for example a key is pressed. However, an example of how user interaction could be provided is included in the function `gnuplot_plot_once()`.
 
 gnuplot_i is completely free software. Use it for whatever you want without any fee, and do not hesitate to send feedback to me:
 
