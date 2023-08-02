@@ -712,7 +712,7 @@ void gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int col
       for (int j = 0; j < count; j++) {
         x[count*i+j] = i;
         y[count*i+j] = j;
-        z[count*i+j] = 1000*sqrt(square(i-count/2)+square(j-count/2));
+        z[count*i+j] = 1000*sqrt(pow(i-count/2, 2)+pow(j-count/2, 2));
       }
     }
     gnuplot_setstyle(h, "lines");
