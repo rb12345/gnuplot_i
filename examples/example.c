@@ -16,7 +16,7 @@
 #define NPOINTS 50
 
 int main(int argc, char *argv[]) {
-  gnuplot_ctrl *h1, *h2, *h3, *h4;
+  gnuplot_ctrl *h1, *h2, *h3;
   double x[NPOINTS], y[NPOINTS], z[NPOINTS];
   int i;
 
@@ -60,11 +60,13 @@ int main(int argc, char *argv[]) {
   sleep(SECONDS);
   printf("sine in impulses\n");
   gnuplot_setstyle(h1, "impulses");
-  gnuplot_plot_equation(h1, "sin(x)", "sine impulses");
+  // note that M_PI cannot be used in the denominator, since that is not known to gnuplot...
+  gnuplot_plot_equation(h1, "cos(x/(atan(1)*4))", "sine impulses");
   sleep(SECONDS);
   printf("arctangens in steps\n");
   gnuplot_setstyle(h1, "steps");
-  gnuplot_plot_equation(h1, "atan(x)", "arctangens steps");
+  // ...but it is possible to use gnuplot constants, such as "pi"
+  gnuplot_plot_equation(h1, "atan(x/pi)", "arctangens steps");
   sleep(SECONDS);
 
   /** User defined 1d and 2d point sets */
@@ -111,20 +113,20 @@ int main(int argc, char *argv[]) {
 
   printf("\n*** contour plot\n");
   gnuplot_resetplot(h1);
-  int count = 100;
-  double xx[count*count], yy[count*count], zz[count*count];
-  for (int i = 0; i < count; i++) {
-    for (int j = 0; j < count; j++) {
-      xx[count*i+j] = i;
-      yy[count*i+j] = j;
-      zz[count*i+j] = 1000*sqrt(pow(i-count/2, 2)+pow(j-count/2, 2));
+  double xx[NPOINTS*NPOINTS], yy[NPOINTS*NPOINTS], zz[NPOINTS*NPOINTS];
+  for (int i = 0; i < NPOINTS; i++) {
+    for (int j = 0; j < NPOINTS; j++) {
+      xx[NPOINTS*i+j] = i;
+      yy[NPOINTS*i+j] = j;
+      zz[NPOINTS*i+j] = 1000*sqrt(pow(i-NPOINTS/2, 2)+pow(j-NPOINTS/2, 2));
     }
   }
   gnuplot_setstyle(h1, "lines");
-  gnuplot_contour_plot(h1, xx, yy, zz, count, count, "Points");
+  gnuplot_contour_plot(h1, xx, yy, zz, NPOINTS, NPOINTS, "Contour");
   sleep(SECONDS);
 
   /** Scatter plot: gnuplot example with data file */
+  /** Note that the program exits gracefully if file is not present, not readable or not present **/
 
   printf("\n*** scatter plot: data file\n");
   gnuplot_resetplot(h1);
@@ -142,19 +144,15 @@ int main(int argc, char *argv[]) {
   gnuplot_setstyle(h2, "lines");
   h3 = gnuplot_init();
   gnuplot_setstyle(h3, "lines");
-  h4 = gnuplot_init();
-  gnuplot_setstyle(h4, "lines");
-  printf("window 1: sin(x)\n");
-  gnuplot_plot_equation(h1, "sin(x)", "sin(x)");
+  printf("window 1: x*sin(x)\n");
+  gnuplot_cmd(h1, "set linecolor rgb 'blue'");   // this does not work yet
+  gnuplot_plot_equation(h1, "x*sin(x)", "x*sin(x)");
   sleep(SECONDS);
-  printf("window 2: x*sin(x)\n");
-  gnuplot_plot_equation(h2, "x*sin(x)", "x*sin(x)");
+  printf("window 2: log(x)/x\n");
+  gnuplot_plot_equation(h2, "log(x)/x", "log(x)/x");
   sleep(SECONDS);
-  printf("window 3: log(x)/x\n");
-  gnuplot_plot_equation(h3, "log(x)/x", "log(x)/x");
-  sleep(SECONDS);
-  printf("window 4: sin(x)/x\n");
-  gnuplot_plot_equation(h4, "sin(x)/x", "sin(x)/x");
+  printf("window 3: sin(x)/x\n");
+  gnuplot_plot_equation(h3, "sin(x)/x", "sin(x)/x");
   sleep(SECONDS);
 
   /** Close gnuplot handles */
@@ -163,6 +161,5 @@ int main(int argc, char *argv[]) {
   gnuplot_close(h1);
   gnuplot_close(h2);
   gnuplot_close(h3);
-  gnuplot_close(h4);
   return 0;
 }
