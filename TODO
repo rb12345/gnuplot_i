@@ -1,4 +1,5 @@
 * More unit tests as not all functions are being covered by tests, notably 3D plots, such as contourplots and heatmaps.
+* Improve print_gnuplot_handle().
 * Further refactoring.
 * wxt is the default terminal type, but need a test to check whether wxWidgets is actually installed. 
 * Plotting styles have been added to gnuplot since this interface library was completed, hence further testing and documentation.
