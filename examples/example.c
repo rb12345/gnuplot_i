@@ -91,6 +91,11 @@ int main(int argc, char *argv[]) {
   gnuplot_plot_xy(h1, x, y, NPOINTS, "user-defined points");
   sleep(SECONDS);
 
+  /** gnuplot_plot_once demo: User defined 1d and 2d point sets */
+
+  printf("\n*** gnuplot_plot_once: user-defined list of doubles\n");
+  gnuplot_plot_once ("lines", "X", "Y", x, y, NPOINTS, "list of doubles");
+
   /** Splot (surface plot) example */
 
   printf("\n*** parametric 3D plot\n");
@@ -126,7 +131,7 @@ int main(int argc, char *argv[]) {
   sleep(SECONDS);
 
   /** Scatter plot: gnuplot example with data file */
-  /** Note that the program exits gracefully if file is not present, not readable or not present **/
+  /** Note that the program exits gracefully if file is not present, not readable or mispelled **/
 
   printf("\n*** scatter plot: data file\n");
   gnuplot_resetplot(h1);
