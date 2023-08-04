@@ -920,7 +920,7 @@ void gnuplot_plot_obj_xy (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void
  */
 /*--------------------------------------------------------------------------*/
 
-void gnuplot_plot_once (char *title, char *style, char *label_x, char *label_y, double *x, double *y, int n) {
+void gnuplot_plot_once (char *style, char *label_x, char *label_y, double *x, double *y, int n, char *title) {
   /* Define handle as local variable to isolate it from other gnuplot sessions */
   gnuplot_ctrl *handle;
 
