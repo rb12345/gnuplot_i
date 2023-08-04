@@ -17,9 +17,9 @@ Example of a minimal program structure:
     #include "gnuplot_i.h"
 
     gnuplot_ctrl *handle = gnuplot_init();
-    gnuplot_setterm(handle, "wxt", 600, 400);
-    gnuplot_plot_equation(handle, "sin(x)", "Sine wave");
-    gnuplot_close(handle);
+    gnuplot_setterm (handle, "wxt", 600, 400);
+    gnuplot_plot_equation (handle, "sin(x)", "Sine wave");
+    gnuplot_close (handle);
 
 
 Provenance
@@ -35,15 +35,15 @@ Other authors have contributed to this library:
 Enhancements
 ------------
 
-This interface library features the following enhancements:
+This interface library features the following enhancements from the original program:
 
-* 3D plots, using `gnuplot_splot(handle, x, y, z, n, "title")`.
-* Setting z-axis labels with `gnuplot_set_axislabel(handle, "z-axis label", "z")`.
-* Production of colour PostScript files with `gnuplot_hardcopy(handle, "graph.ps")`.
+* 3D plots, using `gnuplot_splot (handle, x, y, z, n, "title")`.
+* Setting z-axis labels with `gnuplot_set_axislabel (handle, "z-axis label", "z")`.
+* Production of colour PostScript files with `gnuplot_hardcopy (handle, "graph.ps")`.
 * Windows support.
 * On OS X, if `DISPLAY` environment variable is not set or `USE_AQUA=1`, then aqua is used instead of x11.
 * Plotting of complex structures through the use of callbacks, see `gnuplot_plot_obj_xy` and `gnuplot_splot_obj`.
-* Contour plotting with `gnuplot_setstyle(handle, "lines")` and `gnuplot_contour_plot(handle, x, y, z, nx, ny, "title")`.
+* Contour plotting with `gnuplot_setstyle (handle, "lines")` and `gnuplot_contour_plot (handle, x, y, z, nx, ny, "title")`.
 
 If you have any questions or comments, these can be sent to robert.bradley@merton.oxon.org, or via the [website](http://www.robert-bradley.co.uk).
 
