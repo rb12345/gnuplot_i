@@ -3,7 +3,7 @@
  * Compilation: gcc -Wall -g example.c gnuplot_i.c -o example -lm
  *
  * TODO
- * - need a test for gnuplot_splot_grid(), gnuplot_splot_obj(), gnuplot_plot_obj_xy(), gnuplot_plot_once()
+ * - need a test for gnuplot_splot_grid(), gnuplot_splot_obj(), gnuplot_plot_obj_xy()
  *
  */
 
