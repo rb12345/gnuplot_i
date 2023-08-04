@@ -109,7 +109,7 @@ void gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int col
 void gnuplot_contour_plot (gnuplot_ctrl *handle, double *x, double *y, double *z, int nx, int ny, char *title);
 void gnuplot_splot_obj (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *, gnuplot_point *, int, int), int n, char *title);
 void gnuplot_plot_obj_xy (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *, gnuplot_point *, int, int), int n, char *title);
-void gnuplot_plot_once (char *title, char *style, char *label_x, char *label_y, double *x, double *y, int n);
+void gnuplot_plot_once (char *style, char *label_x, char *label_y, double *x, double *y, int n, char *title);
 void gnuplot_plot_equation (gnuplot_ctrl *handle, char *equation, char *title);
 void gnuplot_hardcopy (gnuplot_ctrl *handle, char *filename, char *color);
 
