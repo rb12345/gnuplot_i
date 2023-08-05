@@ -6,13 +6,6 @@
   @brief    C header file to gnuplot interface.
 */
 
-/*
-  $Id:       gnuplot_i.h,v 1.11 2003/01/27 08:58:04 ndevilla Exp $
-  $Author:   ndevilla $
-  $Date:     2003/01/27 08:58:04 $
-  $Revision: 1.11.2 $
-*/
-
 #ifndef _GNUPLOT_PIPES_H_
 #define _GNUPLOT_PIPES_H_
 
