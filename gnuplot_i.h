@@ -102,8 +102,7 @@ void gnuplot_resetplot (gnuplot_ctrl *handle);
 
 /* Gnplot plotting functions */
 
-void gnuplot_plot_x (gnuplot_ctrl *handle, double *x, int n, char *title);
-void gnuplot_plot_xy (gnuplot_ctrl *handle, double *x, double *y, int n, char *title);
+void gnuplot_plot_coordinates (gnuplot_ctrl *handle, double *x, double *y, int n, char *title);
 void gnuplot_splot (gnuplot_ctrl *handle, double *x, double *y, double *z, int n, char *title);
 void gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int cols, char *title);
 void gnuplot_contour_plot (gnuplot_ctrl *handle, double *x, double *y, double *z, int nx, int ny, char *title);
