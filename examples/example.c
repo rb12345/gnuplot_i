@@ -12,7 +12,7 @@
 #include <math.h>
 #include "gnuplot_i.h"
 
-#define SECONDS 2
+#define SECONDS 1
 #define NPOINTS 50
 
 int main(int argc, char *argv[]) {
@@ -71,30 +71,31 @@ int main(int argc, char *argv[]) {
 
   /** User defined 1d and 2d point sets */
 
-  printf("\n*** user-defined lists of doubles\n");
+  printf("\n*** user-defined list of points: 1d\n");
   gnuplot_resetplot(h1);
-  gnuplot_setstyle(h1, "impulses");
+  gnuplot_setstyle(h1, "points");
   gnuplot_set_axislabel(h1, "x", "X");
-  gnuplot_set_axislabel(h1, "y", "quadratic");
   for (i = 0; i < NPOINTS; i++) {
     x[i] = (double)i * i;
   }
-  gnuplot_plot_x(h1, x, NPOINTS, "user-defined doubles");
+  gnuplot_plot_coordinates(h1, x, y, NPOINTS, "user-defined points: 1d");   // note: y is NULL
   sleep(SECONDS);
-  printf("\n*** user-defined lists of points\n");
-  for (i = 0; i < NPOINTS; i++) {
-    x[i] = (double)i;
-    y[i] = sqrt(i);
-  }
+
+  printf("\n*** user-defined lists of points: 2d\n");
   gnuplot_resetplot(h1);
   gnuplot_setstyle(h1, "points");
-  gnuplot_plot_xy(h1, x, y, NPOINTS, "user-defined points");
+  gnuplot_set_axislabel(h1, "y", "square root");
+  for (i = 0; i < NPOINTS; i++) {
+    x[i] = (double)i/2;  // change of axis scale
+    y[i] = sqrt(i);
+  }
+  gnuplot_plot_coordinates(h1, x, y, NPOINTS, "user-defined points: 2d");
   sleep(SECONDS);
 
   /** gnuplot_plot_once demo: User defined 1d and 2d point sets */
 
   printf("\n*** gnuplot_plot_once: user-defined list of doubles\n");
-  gnuplot_plot_once ("lines", "X", "Y", x, y, NPOINTS, "list of doubles");
+  gnuplot_plot_once ("lines", "X", "Y", x, y, NPOINTS, "list of doubles (plot once)");
 
   /** Splot (surface plot) example */
 
