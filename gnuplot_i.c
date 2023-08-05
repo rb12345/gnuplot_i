@@ -385,7 +385,6 @@ void gnuplot_setterm (gnuplot_ctrl *handle, char *terminal, int width, int heigh
   handle->term[31] = 0;
   FAIL_IF (width < 0 || height < 0, "Plot size dimensions cannot be negative");
   sprintf(cmd, "set terminal %s size %d,%d", handle->term, width, height);
-  //printf("set terminal %s size %d,%d", handle->term, width, height);
   gnuplot_cmd(handle, cmd);
 }
 
@@ -439,62 +438,17 @@ void gnuplot_resetplot (gnuplot_ctrl *handle) {
 
 /*-------------------------------------------------------------------------*/
 /**
-  @brief    Plot a 2d graph from a list of doubles.
-  @param    handle    Gnuplot session control handle.
-  @param    x         Array of doubles.
-  @param    n         Number of values in the passed array.
-  @param    title     Title of the plot (can be NULL).
+  @brief    Check for standard errors and exit when encountered.
+  @param    handle Gnuplot session control handle.
   @return   void
 
-  Plots a 2d graph from a list of doubles. The x-coordinate is the index of the
-  double in the list, the y coordinate is the double in the list.
-
-  Example:
-
-  @code
-    gnuplot_ctrl *h;
-    double x[50];
-
-    h = gnuplot_init();
-    for (int i = 0; i < 50; i++) {
-      x[i] = (double)(i*i);
-    }
-    gnuplot_plot_x(h, x, 50, "parabola");
-    sleep(2);
-    gnuplot_close(h);
-  @endcode
+  This is for refactoring purposes only.
  */
 /*--------------------------------------------------------------------------*/
 
-void gnuplot_plot_x (gnuplot_ctrl *handle, double *x, int n, char *title) {
-  int tmpfd;
-  char name[128];
-  char cmd[GP_CMD_SIZE];
-
-  /* Error handling: mandatory arguments, already open session, opening temporary file */
-  FAIL_IF (handle == NULL || x == NULL || (n < 1), "One of the parameters has been misspecified");
+void gnuplot_i_error (gnuplot_ctrl *handle) {
   FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by another process");
   FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
-
-  /* Open temporary file for output */
-  sprintf(name, GNUPLOT_TEMPFILE, P_tmpdir);
-  FAIL_IF ((tmpfd = mkstemp(name)) == -1, "Cannot create temporary file: exiting plot");
-
-  /* Store file name in array for future deletion */
-  strcpy(handle->to_delete[handle->ntmp], name);
-  handle->ntmp++;
-
-  /* Write data to this file */
-  for (int i = 0; i < n; i++) {
-    sprintf(cmd, "%g\n", x[i]);
-    write(tmpfd, cmd, strlen(cmd));
-  }
-  close(tmpfd);
-
-  /* Command to be sent to gnuplot */
-  sprintf(cmd, "%s \"%s\" title \"%s\" with %s", (handle->nplots > 0) ? "replot" : "plot", name, (title) ? title : "No title" , handle->pstyle);
-  gnuplot_cmd(handle, cmd);
-  handle->nplots++;
 }
 
 /*-------------------------------------------------------------------------*/
@@ -502,14 +456,19 @@ void gnuplot_plot_x (gnuplot_ctrl *handle, double *x, int n, char *title) {
   @brief    Plot a 2d graph from a list of points.
   @param    handle    Gnuplot session control handle.
   @param    x         Pointer to a list of x coordinates.
-  @param    y         Pointer to a list of y coordinates.
+  @param    y         Pointer to a list of y coordinates (can be NULL).
   @param    n         Number of doubles in x (assumed the same as in y).
   @param    title     Title of the plot (can be NULL).
   @return   void
 
-  Plots a 2d graph from a list of points.
-  Provide points through a list of x and a list of y coordinates.
-  Both arrays are assumed to contain the same number of values.
+  Plots a 2d graph from a list of coordinates of type double.
+
+  Provide points through a list of x and a list of y coordinates, with the
+  following proviso.
+  * If y is NULL, then the x-coordinate is the index of the value in the list,
+  and the y coordinate is the value in the list.
+  * If y is not NULL, then both arrays are assumed to contain the same number of
+  values.
 
   Example:
 
@@ -522,22 +481,21 @@ void gnuplot_plot_x (gnuplot_ctrl *handle, double *x, int n, char *title) {
       x[i] = (double)(i)/10.0;
       y[i] = x[i] * x[i];
     }
-    gnuplot_plot_xy(h, x, y, 50, "parabola");
+    gnuplot_plot_coordinates(h, x, y, 50, "parabola");
     sleep(2);
     gnuplot_close(h);
   @endcode
  */
 /*--------------------------------------------------------------------------*/
 
-void gnuplot_plot_xy (gnuplot_ctrl *handle, double *x, double *y, int n, char *title) {
+void gnuplot_plot_coordinates (gnuplot_ctrl *handle, double *x, double *y, int n, char *title) {
   int tmpfd;
   char name[128];
   char cmd[GP_CMD_SIZE];
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
-  FAIL_IF (handle == NULL || x == NULL || y == NULL || (n < 1), "One of the parameters has been misspecified");
-  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by another process");
-  FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
+  FAIL_IF (handle == NULL || x == NULL || (n < 1), "One of the parameters has been misspecified");
+  gnuplot_i_error(handle);
 
   /* Open temporary file for output */
   sprintf(name, GNUPLOT_TEMPFILE, P_tmpdir);
@@ -549,7 +507,7 @@ void gnuplot_plot_xy (gnuplot_ctrl *handle, double *x, double *y, int n, char *t
 
   /* Write data to this file */
   for (int i = 0; i < n; i++) {
-    sprintf(cmd, "%g %g\n", x[i], y[i]);
+    (y == NULL || memcmp(y, y+1, (sizeof(y)-1)*sizeof(y[0])) == 0) ? sprintf(cmd, "%g\n", x[i]) : sprintf(cmd, "%g %g\n", x[i], y[i]);
     write(tmpfd, cmd, strlen(cmd));
   }
   close(tmpfd);
@@ -574,7 +532,7 @@ void gnuplot_plot_xy (gnuplot_ctrl *handle, double *x, double *y, int n, char *t
   Plots a 3d graph from a list of points, passed as arrays x, y and z.
   All arrays are assumed to contain the same number of values.
 
-  Based on `gnuplot_plot_xy`, modifications by Robert Bradley 12/10/2004
+  Based on `gnuplot_plot_coordinates`, modifications by Robert Bradley 12/10/2004
 
   Example:
 
@@ -602,8 +560,7 @@ void gnuplot_splot (gnuplot_ctrl *handle, double *x, double *y, double *z, int n
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
   FAIL_IF (handle == NULL || x == NULL || y == NULL || (n < 1), "One of the parameters has been misspecified");
-  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by another process");
-  FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
+  gnuplot_i_error(handle);
 
   /* Open temporary file for output */
   sprintf(name, GNUPLOT_TEMPFILE, P_tmpdir);
@@ -655,8 +612,7 @@ void gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int col
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
   FAIL_IF (handle == NULL || points == NULL || (rows < 1) || (cols < 1), "One of the parameters has been misspecified");
-  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by another process");
-  FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
+  gnuplot_i_error(handle);
 
   /* Open temporary file for output */
   sprintf(name, GNUPLOT_TEMPFILE, P_tmpdir);
@@ -730,8 +686,7 @@ void gnuplot_contour_plot (gnuplot_ctrl *handle, double *x, double *y, double *z
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
   FAIL_IF (handle == NULL || x == NULL || y == NULL || (nx < 1) || (ny < 1), "One of the parameters has been misspecified");
-  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by another process");
-  FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
+  gnuplot_i_error(handle);
 
   /* Open temporary file for output */
   sprintf(name, GNUPLOT_TEMPFILE, P_tmpdir);
@@ -792,8 +747,7 @@ void gnuplot_splot_obj (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
   FAIL_IF (handle == NULL || getPoint == NULL || (n < 1), "One of the parameters has been misspecified");
-  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by another process");
-  FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
+  gnuplot_i_error(handle);
 
   /* Open temporary file for output */
   sprintf(name, GNUPLOT_TEMPFILE, P_tmpdir);
@@ -873,8 +827,7 @@ void gnuplot_plot_obj_xy (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
   FAIL_IF (handle == NULL || getPoint == NULL || (n < 1), "One of the parameters has been misspecified");
-  FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by another process");
-  FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
+  gnuplot_i_error(handle);
 
   /* Open temporary file for output */
   sprintf(name, GNUPLOT_TEMPFILE, P_tmpdir);
@@ -932,7 +885,7 @@ void gnuplot_plot_once (char *style, char *label_x, char *label_y, double *x, do
   gnuplot_setstyle(handle, (style == NULL) ? "lines" : style);
   gnuplot_set_axislabel(handle, "x", (label_x == NULL) ? "X" : label_x);
   gnuplot_set_axislabel(handle, "y", (label_y == NULL) ? "Y" : label_y);
-  (y == NULL) ? gnuplot_plot_x(handle, x, n, title) : gnuplot_plot_xy(handle, x, y, n, title);
+  gnuplot_plot_coordinates(handle, x, y, n, title);
   printf("Press Enter to continue\n");
   while (getchar() != '\n') {}
   gnuplot_close(handle);
