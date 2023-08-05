@@ -20,20 +20,13 @@
 
   @code
     gnuplot_ctrl *handle = gnuplot_init();
-    gnuplot_cmd(handle, "set terminal png");
-    gnuplot_plot_equation(handle, "sin(x)", "Sine wave");
-    gnuplot_close(handle);
+    gnuplot_cmd (handle, "set terminal png");
+    gnuplot_plot_equation (handle, "sin(x)", "Sine wave");
+    gnuplot_close (handle);
   @endcode
 
 */
 /*--------------------------------------------------------------------------*/
-
-/*
-  $Id: gnuplot_i.c,v 2.10 2003/01/27 08:58:04 ndevilla Exp $
-  $Author: ndevilla $
-  $Date: 2003/01/27 08:58:04 $
-  $Revision: 2.10.2 $
- */
 
 /*---------------------------------------------------------------------------
   Includes
