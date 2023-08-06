@@ -440,6 +440,7 @@ void gnuplot_resetplot (gnuplot_ctrl *handle) {
 /*--------------------------------------------------------------------------*/
 
 void gnuplot_i_error (gnuplot_ctrl *handle) {
+  FAIL_IF (handle == NULL, "Gnuplot control handle invalid");
   FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by another process");
   FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
 }
@@ -487,7 +488,7 @@ void gnuplot_plot_coordinates (gnuplot_ctrl *handle, double *x, double *y, int n
   char cmd[GP_CMD_SIZE];
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
-  FAIL_IF (handle == NULL || x == NULL || (n < 1), "One of the parameters has been misspecified");
+  FAIL_IF (x == NULL || (n < 1), "One of the parameters to gnuplot_plot_coordinates has been misspecified");
   gnuplot_i_error(handle);
 
   /* Open temporary file for output */
@@ -552,7 +553,7 @@ void gnuplot_splot (gnuplot_ctrl *handle, double *x, double *y, double *z, int n
   char cmd[GP_CMD_SIZE];
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
-  FAIL_IF (handle == NULL || x == NULL || y == NULL || (n < 1), "One of the parameters has been misspecified");
+  FAIL_IF (x == NULL || y == NULL || (n < 1), "One of the parameters to gnuplot_splot has been misspecified");
   gnuplot_i_error(handle);
 
   /* Open temporary file for output */
@@ -604,7 +605,7 @@ void gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int col
   char cmd[GP_CMD_SIZE];
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
-  FAIL_IF (handle == NULL || points == NULL || (rows < 1) || (cols < 1), "One of the parameters has been misspecified");
+  FAIL_IF (points == NULL || (rows < 1) || (cols < 1), "One of the parameters to gnuplot_splot_grid has been misspecified");
   gnuplot_i_error(handle);
 
   /* Open temporary file for output */
@@ -678,7 +679,7 @@ void gnuplot_contour_plot (gnuplot_ctrl *handle, double *x, double *y, double *z
   char cmd[GP_CMD_SIZE];
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
-  FAIL_IF (handle == NULL || x == NULL || y == NULL || (nx < 1) || (ny < 1), "One of the parameters has been misspecified");
+  FAIL_IF (x == NULL || y == NULL || (nx < 1) || (ny < 1), "One of the parameters to gnuplot_contour_plot has been misspecified");
   gnuplot_i_error(handle);
 
   /* Open temporary file for output */
@@ -739,7 +740,7 @@ void gnuplot_splot_obj (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *
   char cmd[GP_CMD_SIZE];
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
-  FAIL_IF (handle == NULL || getPoint == NULL || (n < 1), "One of the parameters has been misspecified");
+  FAIL_IF (getPoint == NULL || (n < 1), "One of the parameters to gnuplot_splot_obj has been misspecified");
   gnuplot_i_error(handle);
 
   /* Open temporary file for output */
@@ -819,7 +820,7 @@ void gnuplot_plot_obj_xy (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void
   char cmd[GP_CMD_SIZE];
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
-  FAIL_IF (handle == NULL || getPoint == NULL || (n < 1), "One of the parameters has been misspecified");
+  FAIL_IF (getPoint == NULL || (n < 1), "One of the parameters to gnuplot_plot_obj_xy has been misspecified");
   gnuplot_i_error(handle);
 
   /* Open temporary file for output */
@@ -871,7 +872,7 @@ void gnuplot_plot_once (char *style, char *label_x, char *label_y, double *x, do
   gnuplot_ctrl *handle;
 
   /* Some error handling */
-  FAIL_IF (x == NULL || n < 1, "One of the parameters has been misspecified");
+  FAIL_IF (x == NULL || n < 1, "One of the parameters to gnuplot_plot_once has been misspecified");
   FAIL_IF ((handle = gnuplot_init()) == NULL, "Cannot initialize gnuplot handle");
 
   /* Generate commands to send to gnuplot */
