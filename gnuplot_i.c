@@ -141,7 +141,7 @@ char *gnuplot_get_program_path (char *pname) {
   /* Try in all paths given in the PATH variable */
   buf[0] = 0;
   path = getenv("PATH");
-  FAIL_IF (path == NULL, "PATH variable not set, is gnuplot installed?");
+  FAIL_IF (path == NULL, "The PATH variable has not been set");
   for (i = 0; path[i]; ) {
     for (j = i; (path[j]) && (path[j] != ':'); j++);
     lg = j - i;
@@ -338,6 +338,7 @@ void gnuplot_setstyle (gnuplot_ctrl *handle, char *plot_style) {
       strcmp(plot_style, "impulses") &&
       strcmp(plot_style, "dots") &&
       strcmp(plot_style, "steps") &&
+      strcmp(plot_style, "filledcurves") &&
       strcmp(plot_style, "errorbars") &&
       strcmp(plot_style, "boxes") &&
       strcmp(plot_style, "boxerrorbars")) {
@@ -488,7 +489,7 @@ void gnuplot_plot_coordinates (gnuplot_ctrl *handle, double *x, double *y, int n
   char cmd[GP_CMD_SIZE];
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
-  FAIL_IF (x == NULL || (n < 1), "One of the parameters to gnuplot_plot_coordinates has been misspecified");
+  FAIL_IF (x == NULL || (n < 1), "One of the parameters to gnuplot_plot_coordinates() has been misspecified");
   gnuplot_i_error(handle);
 
   /* Open temporary file for output */
@@ -553,7 +554,7 @@ void gnuplot_splot (gnuplot_ctrl *handle, double *x, double *y, double *z, int n
   char cmd[GP_CMD_SIZE];
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
-  FAIL_IF (x == NULL || y == NULL || (n < 1), "One of the parameters to gnuplot_splot has been misspecified");
+  FAIL_IF (x == NULL || y == NULL || (n < 1), "One of the parameters to gnuplot_splot() has been misspecified");
   gnuplot_i_error(handle);
 
   /* Open temporary file for output */
@@ -605,7 +606,7 @@ void gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int col
   char cmd[GP_CMD_SIZE];
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
-  FAIL_IF (points == NULL || (rows < 1) || (cols < 1), "One of the parameters to gnuplot_splot_grid has been misspecified");
+  FAIL_IF (points == NULL || (rows < 1) || (cols < 1), "One of the parameters to gnuplot_splot_grid() has been misspecified");
   gnuplot_i_error(handle);
 
   /* Open temporary file for output */
@@ -679,7 +680,7 @@ void gnuplot_contour_plot (gnuplot_ctrl *handle, double *x, double *y, double *z
   char cmd[GP_CMD_SIZE];
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
-  FAIL_IF (x == NULL || y == NULL || (nx < 1) || (ny < 1), "One of the parameters to gnuplot_contour_plot has been misspecified");
+  FAIL_IF (x == NULL || y == NULL || (nx < 1) || (ny < 1), "One of the parameters to gnuplot_contour_plot() has been misspecified");
   gnuplot_i_error(handle);
 
   /* Open temporary file for output */
@@ -740,7 +741,7 @@ void gnuplot_splot_obj (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *
   char cmd[GP_CMD_SIZE];
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
-  FAIL_IF (getPoint == NULL || (n < 1), "One of the parameters to gnuplot_splot_obj has been misspecified");
+  FAIL_IF (getPoint == NULL || (n < 1), "One of the parameters to gnuplot_splot_obj() has been misspecified");
   gnuplot_i_error(handle);
 
   /* Open temporary file for output */
@@ -820,7 +821,7 @@ void gnuplot_plot_obj_xy (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void
   char cmd[GP_CMD_SIZE];
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
-  FAIL_IF (getPoint == NULL || (n < 1), "One of the parameters to gnuplot_plot_obj_xy has been misspecified");
+  FAIL_IF (getPoint == NULL || (n < 1), "One of the parameters to gnuplot_plot_obj_xy() has been misspecified");
   gnuplot_i_error(handle);
 
   /* Open temporary file for output */
@@ -872,7 +873,7 @@ void gnuplot_plot_once (char *style, char *label_x, char *label_y, double *x, do
   gnuplot_ctrl *handle;
 
   /* Some error handling */
-  FAIL_IF (x == NULL || n < 1, "One of the parameters to gnuplot_plot_once has been misspecified");
+  FAIL_IF (x == NULL || n < 1, "One of the parameters to gnuplot_plot_once() has been misspecified");
   FAIL_IF ((handle = gnuplot_init()) == NULL, "Cannot initialize gnuplot handle");
 
   /* Generate commands to send to gnuplot */
