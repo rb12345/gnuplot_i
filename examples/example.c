@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
   gnuplot_setterm(h1, "wxt", 900, 400);
   gnuplot_resetplot(h1);
   printf("y = sin(x)\n");
-  gnuplot_plot_equation(h1, "sin(x)", "sine points");
+  gnuplot_plot_equation(h1, "sin(x)", "sine points");  // points is the default linestyle
   sleep(SECONDS);
   printf("y = sin(x)*cos(2*x)\n");
   gnuplot_setstyle(h1, "lines");
@@ -54,16 +54,16 @@ int main(int argc, char *argv[]) {
 
   printf("\n*** various styles\n");
   gnuplot_resetplot(h1);
-  printf("sine in linespoints\n");
+  printf("sin(x) in linespoints\n");
   gnuplot_setstyle(h1, "linespoints");
   gnuplot_plot_equation(h1, "sin(x)", "sine linespoints");
   sleep(SECONDS);
-  printf("sine in impulses\n");
+  printf("cos(x/pi) in impulses\n");
   gnuplot_setstyle(h1, "impulses");
   // note that M_PI cannot be used in the denominator, since that is not known to gnuplot...
   gnuplot_plot_equation(h1, "cos(x/(atan(1)*4))", "sine impulses");
   sleep(SECONDS);
-  printf("arctangens in steps\n");
+  printf("atan(x/pi) in steps\n");
   gnuplot_setstyle(h1, "steps");
   // ...but it is possible to use gnuplot constants, such as "pi"
   gnuplot_plot_equation(h1, "atan(x/pi)", "arctangens steps");
@@ -73,6 +73,7 @@ int main(int argc, char *argv[]) {
 
   printf("\n*** user-defined list of points: 1d\n");
   gnuplot_resetplot(h1);
+  printf("quadratic 1d array\n");
   gnuplot_setstyle(h1, "points");
   gnuplot_set_axislabel(h1, "x", "X");
   for (i = 0; i < NPOINTS; i++) {
@@ -83,6 +84,7 @@ int main(int argc, char *argv[]) {
 
   printf("\n*** user-defined lists of points: 2d\n");
   gnuplot_resetplot(h1);
+  printf("square root 2d array\n");
   gnuplot_setstyle(h1, "points");
   gnuplot_set_axislabel(h1, "y", "square root");
   for (i = 0; i < NPOINTS; i++) {
@@ -101,6 +103,7 @@ int main(int argc, char *argv[]) {
 
   printf("\n*** parametric 3D plot\n");
   gnuplot_resetplot(h1);
+  printf("lissajous curve in 3d space\n");
   gnuplot_setstyle(h1, "lines");
   gnuplot_set_axislabel(h1, "x", "X");
   gnuplot_set_axislabel(h1, "y", "Y");
@@ -119,6 +122,7 @@ int main(int argc, char *argv[]) {
 
   printf("\n*** contour plot\n");
   gnuplot_resetplot(h1);
+  printf("contour of multivariate bell curve\n");
   double xx[NPOINTS*NPOINTS], yy[NPOINTS*NPOINTS], zz[NPOINTS*NPOINTS];
   for (int i = 0; i < NPOINTS; i++) {
     for (int j = 0; j < NPOINTS; j++) {
@@ -149,7 +153,7 @@ int main(int argc, char *argv[]) {
   h2 = gnuplot_init();
   gnuplot_setstyle(h2, "lines");
   h3 = gnuplot_init();
-  gnuplot_setstyle(h3, "lines");
+  gnuplot_setstyle(h3, "filledcurves");
   printf("window 1: x*sin(x)\n");
   gnuplot_cmd(h1, "set linecolor rgb 'blue'");   // this does not work yet
   gnuplot_plot_equation(h1, "x*sin(x)", "x*sin(x)");
