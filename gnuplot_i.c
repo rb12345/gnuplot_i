@@ -441,7 +441,7 @@ void gnuplot_resetplot (gnuplot_ctrl *handle) {
 /*--------------------------------------------------------------------------*/
 
 void gnuplot_i_error (gnuplot_ctrl *handle) {
-  FAIL_IF (handle == NULL, "Gnuplot control handle invalid");
+  FAIL_IF (handle == NULL, "Gnuplot_i control handle invalid");
   FAIL_IF (handle->nplots > 0, "A gnuplot session is already open and held by another process");
   FAIL_IF (handle->ntmp == GP_MAX_TMP_FILES - 1, "Maximum number of temporary files reached: cannot open more");
 }
@@ -494,7 +494,7 @@ void gnuplot_plot_coordinates (gnuplot_ctrl *handle, double *x, double *y, int n
 
   /* Open temporary file for output */
   sprintf(name, GNUPLOT_TEMPFILE, P_tmpdir);
-  FAIL_IF ((tmpfd = mkstemp(name)) == -1, "Cannot create temporary file: exiting plot");
+  FAIL_IF ((tmpfd = mkstemp(name)) == -1, "Cannot create temporary file: exiting gnuplot_plot_coordinates()");
 
   /* Store file name in array for future deletion */
   strcpy(handle->to_delete[handle->ntmp], name);
@@ -559,7 +559,7 @@ void gnuplot_splot (gnuplot_ctrl *handle, double *x, double *y, double *z, int n
 
   /* Open temporary file for output */
   sprintf(name, GNUPLOT_TEMPFILE, P_tmpdir);
-  FAIL_IF ((tmpfd = mkstemp(name)) == -1, "Cannot create temporary file: exiting plot");
+  FAIL_IF ((tmpfd = mkstemp(name)) == -1, "Cannot create temporary file: exiting gnuplot_splot()");
 
   /* Store file name in array for future deletion */
   strcpy(handle->to_delete[handle->ntmp], name);
@@ -611,7 +611,7 @@ void gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int col
 
   /* Open temporary file for output */
   sprintf(name, GNUPLOT_TEMPFILE, P_tmpdir);
-  FAIL_IF ((tmpfd = mkstemp(name)) == -1, "Cannot create temporary file: exiting plot");
+  FAIL_IF ((tmpfd = mkstemp(name)) == -1, "Cannot create temporary file: exiting gnuplot_splot_grid()");
 
   /* Store file name in array for future deletion */
   strcpy(handle->to_delete[handle->ntmp], name);
@@ -654,10 +654,9 @@ void gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int col
 
   @code
     gnuplot_ctrl *h;
-    double x[50], y[50], z[50];
 
     h = gnuplot_init();
-    int count = 100;
+    int count = 50;
     double x[count*count], y[count*count], z[count*count];
     for (int i = 0; i < count; i++) {
       for (int j = 0; j < count; j++) {
@@ -685,7 +684,7 @@ void gnuplot_contour_plot (gnuplot_ctrl *handle, double *x, double *y, double *z
 
   /* Open temporary file for output */
   sprintf(name, GNUPLOT_TEMPFILE, P_tmpdir);
-  FAIL_IF ((tmpfd = mkstemp(name)) == -1, "Cannot create temporary file: exiting plot");
+  FAIL_IF ((tmpfd = mkstemp(name)) == -1, "Cannot create temporary file: exiting gnuplot_contour_plot()");
 
   /* Store file name in array for future deletion */
   strcpy(handle->to_delete[handle->ntmp], name);
@@ -746,7 +745,7 @@ void gnuplot_splot_obj (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *
 
   /* Open temporary file for output */
   sprintf(name, GNUPLOT_TEMPFILE, P_tmpdir);
-  FAIL_IF ((tmpfd = mkstemp(name)) == -1, "Cannot create temporary file: exiting plot");
+  FAIL_IF ((tmpfd = mkstemp(name)) == -1, "Cannot create temporary file: exiting gnuplot_splot_obj()");
 
   /* Store file name in array for future deletion */
   strcpy(handle->to_delete[handle->ntmp], name);
@@ -826,7 +825,7 @@ void gnuplot_plot_obj_xy (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void
 
   /* Open temporary file for output */
   sprintf(name, GNUPLOT_TEMPFILE, P_tmpdir);
-  FAIL_IF ((tmpfd = mkstemp(name)) == -1, "Cannot create temporary file: exiting plot");
+  FAIL_IF ((tmpfd = mkstemp(name)) == -1, "Cannot create temporary file: exiting gnuplot_plot_obj_xy()");
 
   /* Store file name in array for future deletion */
   strcpy(handle->to_delete[handle->ntmp], name);
