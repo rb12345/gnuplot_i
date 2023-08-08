@@ -145,9 +145,9 @@ Color palettes
 Color palettes can be used to color gradients of surface plots, contour plots and heat maps.
 They are supported by gnuplot since at least version 4.2.
 
-A simplified enterprise-grade palette is `bentcoolwarm.palette`, developed by [Kenneth Moreland](https://www.kennethmoreland.com/color-maps/).
+A simplified enterprise-grade palette is `bentcoolwarm.palette`, developed by [Kenneth Moreland](https://www.kennethmoreland.com/color-maps/). 
+This color palette is included to show how palettes can be used within `gnuplot_i`.
 
-Thise color palette is included to show how palettes can be used within `gnuplot_i`.
 More palettes can be found at [ColorBrewer](http://colorbrewer2.org/) and these were
 first ported to gnuplot by [Anna Schneider](https://github.com/aschn/gnuplot-colorbrewer).
 
