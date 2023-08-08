@@ -20,6 +20,6 @@ first ported to gnuplot by [Anna Schneider](https://github.com/aschn/gnuplot-col
 ![Image](overview.png)
 
 These color palettes are included to show how color palettes can be used within `gnuplot_i`, and are purposefully not comprehensive.
-More [examples](http://www.gnuplotting.org/ease-your-plotting-with-config-snippets/) of usage of palettes in gnuplot.
+More [examples](http://www.gnuplotting.org/tag/palette/) of usage of palettes in gnuplot.
 
 To recreate the image above, use the `overview.gnuplot` script.
