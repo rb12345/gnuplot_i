@@ -20,3 +20,5 @@ first ported to gnuplot by [Anna Schneider](https://github.com/aschn/gnuplot-col
 ![Image](overview.png)
 
 More [examples](http://www.gnuplotting.org/ease-your-plotting-with-config-snippets/) of usage of palettes in gnuplot.
+
+To recreate the image above, use the `overview.gnuplot` script.
