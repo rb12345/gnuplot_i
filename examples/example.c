@@ -160,7 +160,7 @@ int main(int argc, char *argv[]) {
   gnuplot_cmd(h1, "set title 'Alpha-parameter by shape and scale'");
   gnuplot_cmd(h1, "load 'palettes/bentcoolwarm.palette'");
   gnuplot_cmd(h1, "set pm3d");
-  gnuplot_cmd(h1, "splot 'indicatorvalues.out'");
+  gnuplot_cmd(h1, "splot 'indicatorvalues.data'");
   sleep(SECONDS);
 
   /** Multiple output screens */
