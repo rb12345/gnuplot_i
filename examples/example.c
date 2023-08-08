@@ -145,6 +145,24 @@ int main(int argc, char *argv[]) {
   gnuplot_cmd(h1, "plot 'scatter.data' with points pointtype '•' linecolor 'blue'");
   sleep(SECONDS);
 
+  /** Contour plot with color palette*/
+  /** This does not work yet: no z-axis is shown */
+
+  printf("\n*** contour plot with palette\n");
+  gnuplot_resetplot(h1);
+  gnuplot_set_axislabel(h1, "x", "shape");
+  gnuplot_set_axislabel(h1, "y", "scale");
+  gnuplot_set_axislabel(h1, "z", "alpha");
+  gnuplot_cmd(h1, "set parametric");
+  gnuplot_cmd(h1, "set contour base");
+  gnuplot_cmd(h1, "set style data lines");
+  gnuplot_cmd(h1, "set dgrid3d 20, 20, 20");
+  gnuplot_cmd(h1, "set title 'Alpha-parameter by shape and scale'");
+  gnuplot_cmd(h1, "load 'palettes/bentcoolwarm.palette'");
+  gnuplot_cmd(h1, "set pm3d");
+  gnuplot_cmd(h1, "splot 'indicatorvalues.out'");
+  sleep(SECONDS);
+
   /** Multiple output screens */
 
   printf("\n*** multiple output windows\n");
