@@ -52,7 +52,7 @@ The procedure to display graphics in gnuplot is then as follows:
 
     gnuplot_setterm (h, "wxt", 600, 400);
     gnuplot_setstyle (h, "impulses");
-    gnuplot_set_axislabel (h, 'x', "Time(secs)");
+    gnuplot_set_axislabel (h, 'x', "Time (secs)");
     gnuplot_set_axislabel (h, 'y', "Value");
 
   The critical routine is `gnuplot_cmd()`, which sends character strings to gnuplot as though they were commands typed in by a user. This routine works in a printf fashion, accepting the same kind of format string and variable number of arguments.
@@ -137,6 +137,21 @@ The procedure to display graphics in gnuplot is then as follows:
 
 
 See examples of `gnuplot_i` usage in the directory `examples`.
+
+
+Color palettes
+--------------
+
+Color palettes can be used to color gradients of surface plots, contour plots and heat maps.
+They are supported by gnuplot since at least version 4.2.
+
+A simplified enterprise-grade palette is `bentcoolwarm.palette`, developed by [Kenneth Moreland](https://www.kennethmoreland.com/color-maps/).
+
+Thise color palette is included to show how palettes can be used within `gnuplot_i`.
+More palettes can be found at [ColorBrewer](http://colorbrewer2.org/) and these were
+first ported to gnuplot by [Anna Schneider](https://github.com/aschn/gnuplot-colorbrewer).
+
+More [examples](http://www.gnuplotting.org/tag/palette/) of usage of palettes in gnuplot.
 
 
 Additional remarks
