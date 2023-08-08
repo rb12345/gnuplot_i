@@ -1,0 +1,25 @@
+# line styles for ColorBrewer lapislazuli
+# for use with sequential data
+# provides 8 blue colors of decreasing saturation
+# compatible with gnuplot >=4.2
+# author: Long Radix
+
+# line styles
+set style line 1 lt 1 lc rgb '#0A1128' # very blue
+set style line 2 lt 1 lc rgb '#001F54' #
+set style line 3 lt 1 lc rgb '#034078' #
+set style line 4 lt 1 lc rgb '#1282A2' #
+set style line 5 lt 1 lc rgb '#36A6C6' #
+set style line 6 lt 1 lc rgb '#86C6F6' #
+set style line 7 lt 1 lc rgb '#B9D7F9' #
+set style line 8 lt 1 lc rgb '#D9E7FA' # grey-blue
+
+# palette
+set palette defined ( 0 '#0A1128',\
+    	    	      1 '#001F54',\
+		      2 '#034078',\
+		      3 '#1282A2',\
+		      4 '#36A6C6',\
+		      5 '#86C6F6',\
+		      6 '#B9D7F9',\
+		      7 '#D9E7FA' )

@@ -1,0 +1,20 @@
+# line styles for ColorBrewer greyblue
+# for use with sequential data
+# provides 8 grey colors of decreasing saturation
+# compatible with gnuplot >=4.2
+# author: Long Radix
+
+# line styles
+set style line 1 lt 1 lc rgb '#f0fbfc' # white
+set style line 2 lt 1 lc rgb '#e0fbfc' # 
+set style line 3 lt 1 lc rgb '#c2dfe3' # 
+set style line 4 lt 1 lc rgb '#9db4c0' #
+set style line 5 lt 1 lc rgb '#5c6b73' # dolomite grey
+
+# palette
+set palette defined ( \
+    0 '#f0fbfc', \
+    1 '#e0fbfc', \
+    2 '#c2dfe3', \
+    3 '#9db4c0', \
+    4 '#5c6b73')
