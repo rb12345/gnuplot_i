@@ -84,13 +84,9 @@ This library must be included as follows from every C program that uses `gnuplot
 
   The following display functions are available:
 
-  Plots a 2d graph from a list of doubles. The x-coordinate is the index of the double in the list, the y coordinate is the value in the list.
+  Plots a 2d graph from a list of points. Provide points through a list of x and a list of (possibly NULL) y coordinates. Both arrays are assumed to have length n.
 
-    void gnuplot_plot_x (gnuplot_ctrl *handle, double *x, int n, char *title)
-
-  Plots a 2d graph from a list of points. Provide points through a list of x and a list of y coordinates. Both arrays are assumed to have the same length.
-
-    void gnuplot_plot_xy (gnuplot_ctrl *handle, double *x, double *y, int n, char *title)
+    void gnuplot_plot_coordinates (gnuplot_ctrl *handle, double *x, double *y, int n, char *title)
 
   Plots a 3d graph from a list of points, passed as arrays x, y and z. All arrays are assumed to have the same length.
 
@@ -131,7 +127,7 @@ This library must be included as follows from every C program that uses `gnuplot
 
 ### Close the gnuplot handle
 
-  Closing a gnuplot handle removes all temporary gnuplot files from `/tmp` and `/var/tmp` as well as frees up memory taken up by the gnuplot_ctrl handle.
+  Closing a gnuplot handle removes all temporary gnuplot files from `/tmp` and `/var/tmp` as well as frees the memory taken up by the gnuplot_ctrl handle.
 
   Syntax:
 
