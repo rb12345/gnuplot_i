@@ -8,15 +8,17 @@ The C interface library `gnuplot_i` (formerly known as `gnuplot_pipes`) is a pro
 
 Gnuplot must be installed to use this library.
 
-This library must be included as follows from the C program:
-
-    #include "gnuplot_i.h"
-
 
 Tutorial
 --------
 
 The procedure to display graphics in gnuplot is then as follows:
+
+### Include the header file in the C program
+
+This library must be included as follows from every C program that uses `gnuplot_i` functions:
+
+    #include "path/to/gnuplot_i.h"
 
 
 ### Open a new gnuplot session
@@ -36,17 +38,17 @@ The procedure to display graphics in gnuplot is then as follows:
   Gnuplot configuration options are settings such as terminal type, plotting style and labels.
   The following functions to set these options are available:
 
-    gnuplot_setterm (gnuplot_ctrl *handle, char *terminal, int width, int height)
-
   Sets the terminal type for the correct system-dependent display of the plot, such as 'wxt', 'aqua', 'x11', 'png', 'windows'.
 
-    gnuplot_setstyle (handle, style)
+    gnuplot_setterm (gnuplot_ctrl *handle, char *terminal, int width, int height)
 
   Sets the plotting style of the next plots, such as 'lines', 'dots', 'linespoints'.
 
-    gnuplot_set_axislabel (handle, axis, label)
+    gnuplot_setstyle (handle, style)
 
   Sets the label for the axis identified by variable `axis` (x, y or z).
+
+    gnuplot_set_axislabel (handle, axis, label)
 
   Examples:
 
@@ -70,61 +72,61 @@ The procedure to display graphics in gnuplot is then as follows:
         gnuplot_cmd (handle, "plot y=%d*x", i);
     }
 
+  With `gnuplot_cmd()` additional configuration related functions can be set up where needed.
+
   The following commands request the output to be saved as a Postscript file named 'curve.ps':
 
     gnuplot_cmd (h, "set terminal postscript");
     gnuplot_cmd (h, "set output \"curve.ps\"");
-
-  With `gnuplot_cmd()` additional configuration related functions can be set up where needed.
 
 
 ### Send a display function
 
   The following display functions are available:
 
-    void gnuplot_plot_x (gnuplot_ctrl *handle, double *x, int n, char *title)
-
   Plots a 2d graph from a list of doubles. The x-coordinate is the index of the double in the list, the y coordinate is the value in the list.
 
-    void gnuplot_plot_xy (gnuplot_ctrl *handle, double *x, double *y, int n, char *title)
+    void gnuplot_plot_x (gnuplot_ctrl *handle, double *x, int n, char *title)
 
   Plots a 2d graph from a list of points. Provide points through a list of x and a list of y coordinates. Both arrays are assumed to have the same length.
 
-    void gnuplot_splot (gnuplot_ctrl *handle, double *x, double *y, double *z, int n, char *title)
+    void gnuplot_plot_xy (gnuplot_ctrl *handle, double *x, double *y, int n, char *title)
 
   Plots a 3d graph from a list of points, passed as arrays x, y and z. All arrays are assumed to have the same length.
 
-    void gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int cols, char *title)
+    void gnuplot_splot (gnuplot_ctrl *handle, double *x, double *y, double *z, int n, char *title)
 
   Plots a 3d graph from a grid of points, passed in the form of an array [x,y].
 
-    void gnuplot_contour_plot (gnuplot_ctrl *handle, double *x, double *y, double *z, int nx, int ny, char *title)
+    void gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int cols, char *title)
 
   Plots a contour plot from a list of points, passed as arrays x, y and z.
 
-    void gnuplot_splot_obj (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *, gnuplot_point *, int, int), int n, char *title)
+    void gnuplot_contour_plot (gnuplot_ctrl *handle, double *x, double *y, double *z, int nx, int ny, char *title)
 
   Plots a 3d graph using callback functions to return the points.
 
-    void gnuplot_plot_obj_xy (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *, gnuplot_point *, int, int), int n, char *title)
+    void gnuplot_splot_obj (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *, gnuplot_point *, int, int), int n, char *title)
 
   Plots a 2d graph using a callback function to return the points.
 
-    void gnuplot_plot_once (char *title, char *style, char *label_x, char *label_y, double *x, double *y, int n)
+    void gnuplot_plot_obj_xy (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *, gnuplot_point *, int, int), int n, char *title)
 
   Opens a new gnuplot session, plots the provided signal as an X or XY signal depending on a provided y, waits for a carriage return on stdin and closes the session.
 
-    void gnuplot_plot_equation (gnuplot_ctrl *handle, char *equation, char *title)
+    void gnuplot_plot_once (char *title, char *style, char *label_x, char *label_y, double *x, double *y, int n)
 
   Plots a given equation. The general form of the equation is y=f(x), by providing the f(x) side of the equation only.
 
-    void gnuplot_hardcopy (gnuplot_ctrl *handle, char *filename, char *color)
+    void gnuplot_plot_equation (gnuplot_ctrl *handle, char *equation, char *title)
 
   Sets the terminal to Postscript, replots the graph and then resets the terminal back to its original setting. The use of this function supposes that it will be used in combination with one of the plotting functions.
 
-    gnuplot_resetplot (gnuplot_ctrl *handle)
+    void gnuplot_hardcopy (gnuplot_ctrl *handle, char *filename, char *color)
 
   Clears the current gnuplot display before the next plot is inserted into the same gnuplot window.
+
+    gnuplot_resetplot (gnuplot_ctrl *handle)
 
 
 ### Close the gnuplot handle
@@ -142,14 +144,16 @@ See examples of `gnuplot_i` usage in the directory `examples`.
 Color palettes
 --------------
 
-Color palettes can be used to color gradients of surface plots, contour plots and heat maps.
-They are supported by gnuplot since at least version 4.2.
+Color palettes can be used to color the gradients of surface plots, contour plots and heat maps.
+They are supported by gnuplot since version 4.2.
 
 A simplified enterprise-grade palette is `bentcoolwarm.palette`, developed by [Kenneth Moreland](https://www.kennethmoreland.com/color-maps/). 
 This color palette is included to show how palettes can be used within `gnuplot_i`.
 
 More palettes can be found at [ColorBrewer](http://colorbrewer2.org/) and these were
 first ported to gnuplot by [Anna Schneider](https://github.com/aschn/gnuplot-colorbrewer).
+
+To create your own color palette, see the gradient picker by [David Johnstone](https://davidjohnstone.net/lch-lab-colour-gradient-picker).
 
 More [examples](http://www.gnuplotting.org/tag/palette/) of usage of palettes in gnuplot.
 
