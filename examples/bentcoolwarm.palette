@@ -8,10 +8,10 @@
 # Converted for use with Gnuplot from Perl by Bruce Ravel
 # converted from 
 # https://raw.githubusercontent.com/bruceravel/Graphics-Gnuplot-Palettes/master/lib/Graphics/Gnuplot/Palettes/Moreland/BentCoolWarm.pm
-# to pal file by Adam Majewski
+# to palette file by Adam Majewski
 # https://gitlab.com/adammajewski/color_gradient
-# to use : 
-# load "bentcoolwarm.pal"
+# to use this palette in gnuplot:
+# load "bentcoolwarm.palette"
 # set output "bentcoolwarm.png"
 # test palette
 
