@@ -12,7 +12,8 @@ Gnuplot must be installed to use this library.
 Tutorial
 --------
 
-The procedure to display graphics in gnuplot is then as follows:
+The following describes the possible steps to display graphics in gnuplot from a C program:
+
 
 ### Include the header file in the C program
 
@@ -134,6 +135,8 @@ This library must be included as follows from every C program that uses `gnuplot
     gnuplot_close(h);
 
 
+### Further usage
+
 See examples of `gnuplot_i` usage in the directory `examples`.
 
 
@@ -157,7 +160,7 @@ More [examples](http://www.gnuplotting.org/tag/palette/) of usage of palettes in
 Additional remarks
 ------------------
 
-Note that it is possible to open several gnuplot sessions from the same program. Just be careful as to which session you are talking to when using functions. Example:
+Note that it is possible to open several gnuplot sessions from the same program:
 
     h1 = gnuplot_init();
     h2 = gnuplot_init();
@@ -173,6 +176,14 @@ Do not forget to close an opened session. Not closing a session pollutes your sy
 User interactions are not part of `gnuplot_i`. It is however possible to resize the window or rotate a 3D plot with the mouse for example, as supported by gnuplot itself.
 
 No timing mechanisms are provided to leave the outputs on screen until for example a key is pressed. However, an example of how user interaction could be provided is included in the function `gnuplot_plot_once()`.
+
+This library was developed since early versions of `gnuplot` and not all new functionality added since is supported by this library, such as some plotting styles.
+
+
+Licensing
+---------
+
+This library has been licensed under the GPL, same as all other GNU software, and is therefore less strict than the [gnuplot license](https://spdx.org/licenses/gnuplot.html). 
 
 gnuplot_i is completely free software. Use it for whatever you want without any fee, and do not hesitate to send feedback to me:
 
