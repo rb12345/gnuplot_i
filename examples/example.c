@@ -3,14 +3,14 @@
  * Compilation: gcc -Wall -g example.c gnuplot_i.c -o example -lm
  *
  * TODO
- * - need a test for gnuplot_splot_grid(), gnuplot_splot_obj(), gnuplot_plot_obj_xy()
+ * - need an example for gnuplot_splot_grid(), gnuplot_splot_obj(), gnuplot_plot_obj_xy()
  *
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "gnuplot_i.h"
+#include "../gnuplot_i.h"
 
 #define SECONDS 1
 #define NPOINTS 50
@@ -146,6 +146,7 @@ int main(int argc, char *argv[]) {
   sleep(SECONDS);
 
   /** Contour plot with color palette*/
+  /** if no color palette is found, then gnuplots standard color palette will be used: rgbformulae */
   /** This does not work yet: no z-axis is shown */
 
   printf("\n*** contour plot with palette\n");
@@ -158,7 +159,7 @@ int main(int argc, char *argv[]) {
   gnuplot_cmd(h1, "set style data lines");
   gnuplot_cmd(h1, "set dgrid3d 20, 20, 20");
   gnuplot_cmd(h1, "set title 'Alpha-parameter by shape and scale'");
-  gnuplot_cmd(h1, "load 'palettes/bentcoolwarm.palette'");
+  gnuplot_cmd(h1, "load 'bentcoolwarm.palette'");
   gnuplot_cmd(h1, "set pm3d");
   gnuplot_cmd(h1, "splot 'indicatorvalues.data'");
   sleep(SECONDS);
