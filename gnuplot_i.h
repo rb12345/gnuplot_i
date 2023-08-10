@@ -27,7 +27,7 @@
 #define GP_TMP_NAME_SIZE 512
 
 /*---------------------------------------------------------------------------
-  New Types
+  Gnuplot_i types
  ---------------------------------------------------------------------------*/
 
 /*-------------------------------------------------------------------------*/
@@ -93,7 +93,7 @@ void gnuplot_setterm (gnuplot_ctrl *handle, char *terminal, int width, int heigh
 void gnuplot_set_axislabel (gnuplot_ctrl *handle, char *axis, char *label);
 void gnuplot_resetplot (gnuplot_ctrl *handle);
 
-/* Gnplot plotting functions */
+/* Gnuplot interface plotting functions */
 
 void gnuplot_plot_coordinates (gnuplot_ctrl *handle, double *x, double *y, int n, char *title);
 void gnuplot_splot (gnuplot_ctrl *handle, double *x, double *y, double *z, int n, char *title);
