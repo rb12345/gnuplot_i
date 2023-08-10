@@ -44,6 +44,8 @@
 #define GP_TITLE_SIZE 80
 /** Maximum amount of characters for an equation y=f(x). */
 #define GP_EQ_SIZE 512
+/** Maximum amount of characters of a temporary file name. */
+#define NAME_SIZE 128
 /** Maximum amount of characters of a name in the PATH. */
 #define PATH_MAXNAMESZ 4096
 /** Error message display. */
@@ -86,7 +88,7 @@ int mkstemp (char *name) {
   char *start = strstr(name, "XXXXXX");
 
   for (i = 0; i < 6; i++) {
-    start[i] = (char) (48 + ((int) rand() * 10 / 32768.0));
+    start[i] = (char)(48 + ((int)rand() * 10 / 32768.0));
   }
   i = open(name, O_RDWR | O_CREAT);
   if (i != -1) {
@@ -142,7 +144,7 @@ char *gnuplot_get_program_path (char *pname) {
   buf[0] = 0;
   path = getenv("PATH");
   FAIL_IF (path == NULL, "The PATH variable has not been set");
-  for (i = 0; path[i]; ) {
+  for (i = 0; path[i];) {
     for (j = i; (path[j]) && (path[j] != ':'); j++);
     lg = j - i;
     strncpy(buf, path + i, lg);
@@ -373,7 +375,7 @@ void gnuplot_setstyle (gnuplot_ctrl *handle, char *plot_style) {
 /*--------------------------------------------------------------------------*/
 
 void gnuplot_setterm (gnuplot_ctrl *handle, char *terminal, int width, int height) {
-  char cmd[64];
+  char cmd[GP_CMD_SIZE];
 
   strncpy(handle->term, terminal, 32);
   handle->term[31] = 0;
@@ -485,7 +487,7 @@ void gnuplot_i_error (gnuplot_ctrl *handle) {
 
 void gnuplot_plot_coordinates (gnuplot_ctrl *handle, double *x, double *y, int n, char *title) {
   int tmpfd;
-  char name[128];
+  char name[NAME_SIZE];
   char cmd[GP_CMD_SIZE];
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
@@ -550,7 +552,7 @@ void gnuplot_plot_coordinates (gnuplot_ctrl *handle, double *x, double *y, int n
 
 void gnuplot_splot (gnuplot_ctrl *handle, double *x, double *y, double *z, int n, char *title) {
   int tmpfd;
-  char name[128];
+  char name[NAME_SIZE];
   char cmd[GP_CMD_SIZE];
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
@@ -602,7 +604,7 @@ void gnuplot_splot (gnuplot_ctrl *handle, double *x, double *y, double *z, int n
 
 void gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int cols, char *title) {
   int tmpfd;
-  char name[128];
+  char name[NAME_SIZE];
   char cmd[GP_CMD_SIZE];
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
@@ -675,7 +677,7 @@ void gnuplot_splot_grid (gnuplot_ctrl *handle, double *points, int rows, int col
 
 void gnuplot_contour_plot (gnuplot_ctrl *handle, double *x, double *y, double *z, int nx, int ny, char *title) {
   int tmpfd;
-  char name[128];
+  char name[NAME_SIZE];
   char cmd[GP_CMD_SIZE];
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
@@ -736,7 +738,7 @@ void gnuplot_contour_plot (gnuplot_ctrl *handle, double *x, double *y, double *z
 
 void gnuplot_splot_obj (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *, gnuplot_point *, int, int), int n, char *title) {
   int tmpfd;
-  char name[128];
+  char name[NAME_SIZE];
   char cmd[GP_CMD_SIZE];
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
@@ -816,7 +818,7 @@ void gnuplot_splot_obj (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *
 
 void gnuplot_plot_obj_xy (gnuplot_ctrl *handle, void *obj, void (*getPoint)(void *, gnuplot_point *, int, int), int n, char *title) {
   int tmpfd;
-  char name[128];
+  char name[NAME_SIZE];
   char cmd[GP_CMD_SIZE];
 
   /* Error handling: mandatory arguments, already open session, opening temporary file */
