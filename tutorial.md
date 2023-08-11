@@ -144,14 +144,10 @@ Color palettes
 --------------
 
 Color palettes can be used to color the gradients of surface plots, contour plots and heat maps.
-They are supported by gnuplot since version 4.2.
+They are supported by gnuplot since version 4.2. 
+A simplified enterprise-grade palette that is included in this library is `bentcoolwarm.palette`, developed by [Kenneth Moreland](https://www.kennethmoreland.com/color-maps/). 
 
-A simplified enterprise-grade palette is `bentcoolwarm.palette`, developed by [Kenneth Moreland](https://www.kennethmoreland.com/color-maps/). 
-This color palette is included to show how palettes can be used within `gnuplot_i`.
-
-More palettes can be found at [ColorBrewer](http://colorbrewer2.org/) and these were
-first ported to gnuplot by [Anna Schneider](https://github.com/aschn/gnuplot-colorbrewer).
-
+More palettes can be found at [ColorBrewer](http://colorbrewer2.org/) and at [Anna Schneider](https://github.com/aschn/gnuplot-colorbrewer). 
 To create your own color palette, see the gradient picker by [David Johnstone](https://davidjohnstone.net/lch-lab-colour-gradient-picker).
 
 More [examples](http://www.gnuplotting.org/tag/palette/) of usage of palettes in gnuplot.
@@ -183,21 +179,7 @@ This library was developed since early versions of `gnuplot` and not all new fun
 Licensing
 ---------
 
-This library has been licensed under the GPL, same as all other GNU software, and is therefore less strict than the [gnuplot license](https://spdx.org/licenses/gnuplot.html). 
-
-gnuplot_i is completely free software. Use it for whatever you want without any fee, and do not hesitate to send feedback to me:
-
-    <nDevil@eso.org>
-
-If you can, I would appreciate a mention somewhere that you are using `gnuplot_i` in your application. Something like:
-
-    This software uses the gnuplot_i library written by N.Devillard <nDevil@eso.org>.
-
-If you are using `gnuplot_i` in a web-based application, you can also add a link to the gnuplot_i home page:
-
-    http://ndevilla.free.fr/
-
-If you are so happy about this piece of code that you would like to fund more stuff like that, do not hesitate to send me cash :-)
+This library has been licensed under the GPL, same as all other GNU software, and is therefore less strict than the [gnuplot license](https://spdx.org/licenses/gnuplot.html) itself. 
 
 
 * Nicolas Devillard - April 2000
