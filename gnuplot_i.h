@@ -1,8 +1,5 @@
 /**
   @file     gnuplot_i.h
-  @author   N. Devillard
-  @date	    Sep 1998, Oct 2004, Sept 2005, Nov 2005, Apr 2006
-  @version  $Revision: 1.11.3 $
   @brief    C header file to gnuplot interface.
 */
 
