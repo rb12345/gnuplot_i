@@ -4,9 +4,6 @@
 /*-------------------------------------------------------------------------*/
 /**
   @file    gnuplot_i.c
-  @author  N. Devillard (parts R. Bradley)
-  @date    Sep 1998, Oct 2004, Sept 2005, Nov 2005, Apr 2006
-  @version $Revision: 2.10.3 $
   @brief   C interface to gnuplot.
 
   gnuplot_i is a C interface library that enables sending display
