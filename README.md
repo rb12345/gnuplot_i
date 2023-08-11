@@ -60,29 +60,9 @@ This library comes with the following examples:
 Compilation instructions are included in each of these examples.
 
 
-Changelog
----------
-
-29 May 2023 - Refactoring, error handling, stylistic improvements, documentation updates.
-
-02 Apr 2006 - Added `gnuplot_splot_grid` for plotting 2D arrays of data, and restored the lost contour plotting code.
-
-13 Mar 2006 - Fixed "bus error" under OS X when not using X11 and USE_AQUA environment variable is not set.
-
-23 Nov 2005 - Added `gnuplot_contour_plot`, which plots contours; use `gnuplot_setstyle` to set the contour style
-
-15 Sep 2005 - Added possible OS X support, plus the `gnuplot_plot_obj_xy` and `gnuplot_splot_obj` functions.
-
-11 Sep 2005 - Added Windows support
-
-14 Aug 2005 - Included fixes from the official version 2.10
-
-02 Nov 2004 - Initial version uploaded, based on gnuplot_i v2.6
-
-
 Documentation
 -------------
 
-A tutorial is available in `gnuplot_i.md`.
+A tutorial is available in `tutorial.md`.
 
 Documentation of macros, includes, functions and prototypes can be straightforwardly generated using [doxygen](https://www.doxygen.nl) and/or the [doxywizard](https://www.doxygen.nl/manual/doxywizard_usage.html). A Doxyfile is provided for this purpose.
