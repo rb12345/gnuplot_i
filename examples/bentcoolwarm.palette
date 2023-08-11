@@ -1,15 +1,7 @@
-#  Palette from Kenneth Moreland
+# Palette from Kenneth Moreland
 # http://www.kennethmoreland.com/color-advice/
-#
-# "Why We Use Bad Color Maps and What You Can Do About It."  See also
-# Kenneth Moreland. In Proceedings of Human Vision and Electronic Imaging
-#  (HVEI), 2016. (To appear)
-#
-# Converted for use with Gnuplot from Perl by Bruce Ravel
-# converted from 
 # https://raw.githubusercontent.com/bruceravel/Graphics-Gnuplot-Palettes/master/lib/Graphics/Gnuplot/Palettes/Moreland/BentCoolWarm.pm
-# to palette file by Adam Majewski
-# https://gitlab.com/adammajewski/color_gradient
+# 
 # to use this palette in gnuplot:
 # load "bentcoolwarm.palette"
 # set output "bentcoolwarm.png"
