@@ -161,8 +161,8 @@ Note that it is possible to open several gnuplot sessions from the same program:
     h1 = gnuplot_init();
     h2 = gnuplot_init();
 
-    gnuplot_plot_equation (h1, "sin(x)", "sine on first session");
-    gnuplot_plot_equation (h2, "log(x)", "log on second session");
+    gnuplot_plot_equation (h1, "sin(x)", "sine on session 1");
+    gnuplot_plot_equation (h2, "log(x)", "natural logarithm on session 2");
     sleep(3);
     gnuplot_close(h1);
     gnuplot_close(h2);
