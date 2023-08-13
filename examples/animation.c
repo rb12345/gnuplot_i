@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "gnuplot_i.h"
+#include "../gnuplot_i.h"
 
 int main(int argc, char *argv[]) {
   gnuplot_ctrl *handle;
