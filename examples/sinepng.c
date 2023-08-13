@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include "gnuplot_i.h"
+#include "../gnuplot_i.h"
 
 int main(int argc, char * argv[]) {
   gnuplot_ctrl *handle = gnuplot_init();
