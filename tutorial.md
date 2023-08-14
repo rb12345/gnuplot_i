@@ -174,14 +174,3 @@ User interactions are not part of `gnuplot_i`. It is however possible to resize 
 No timing mechanisms are provided to leave the outputs on screen until for example a key is pressed. However, an example of how user interaction could be provided is included in the function `gnuplot_plot_once()`.
 
 This library was developed since early versions of `gnuplot` and not all new functionality added since is supported by this library, such as some plotting styles.
-
-
-Licensing
----------
-
-This library has been licensed under the GPL, same as all other GNU software, and is therefore less strict than the [gnuplot license](https://spdx.org/licenses/gnuplot.html) itself. 
-
-
-* Nicolas Devillard - April 2000
-* Robert Bradley - 2006
-* longradix - July 2023
