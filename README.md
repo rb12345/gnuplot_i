@@ -66,3 +66,9 @@ Documentation
 A tutorial is available in `tutorial.md`.
 
 Documentation of macros, includes, functions and prototypes can be straightforwardly generated using [doxygen](https://www.doxygen.nl) and/or the [doxywizard](https://www.doxygen.nl/manual/doxywizard_usage.html). A Doxyfile is provided for this purpose.
+
+
+Licensing
+---------
+
+This library has been licensed under the GPL, same as all other GNU software, and is therefore less strict than the [gnuplot license](https://spdx.org/licenses/gnuplot.html) itself. 
